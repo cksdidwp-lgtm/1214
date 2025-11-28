@@ -117,16 +117,16 @@
         }
 
         .card {
-            width: 100%;
-            max-width: 360px;
-            height: 50vh;
-            min-height: 300px;
-            max-height: 550px;
-            position: relative;
-            cursor: pointer;
-            transform-style: preserve-3d;
-            transition: transform 0.6s;
-        }
+    width: 100%;
+    max-width: 300px;    /* 기존 360px에서 300px로 줄임 */
+    aspect-ratio: 1 / 1; /* 가로 세로 1:1 비율 (정사각형) 강제 */
+    height: auto;        /* 높이는 너비에 맞춰 자동으로 설정됨 */
+    position: relative;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    margin: 0 auto;      /* 중앙 정렬 */
+}
 
         .card.flipped {
             transform: rotateY(180deg);
@@ -2262,5 +2262,6 @@
         }
     </script>
 </body>
+
 
 </html>
