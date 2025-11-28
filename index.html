@@ -1,0 +1,2266 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>성서 히브리어 단어장</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@400;700&family=Noto+Sans+KR:wght@400;500;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f5f7fa;
+            --text-color: #333;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            --icon-color: #2c3e50;
+            --input-bg: rgba(255, 255, 255, 0.2);
+            --input-text: white;
+            --input-placeholder: rgba(255, 255, 255, 0.7);
+            --header-height: 60px;
+            --bottom-nav-height: 70px;
+        }
+
+        [data-theme="dark"] {
+            --primary-color: #bb86fc;
+            --secondary-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: rgba(30, 30, 30, 0.95);
+            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
+            --icon-color: #e0e0e0;
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --input-text: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            padding-bottom: calc(var(--bottom-nav-height) + 20px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100dvh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        header {
+            width: 100%;
+            max-width: 600px;
+            flex-shrink: 0;
+            z-index: 10;
+        }
+
+        header h1 {
+            color: white;
+            margin-bottom: 5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: 700;
+            font-size: clamp(1.4rem, 4vw, 1.8rem);
+        }
+
+        .view-container {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: opacity 0.3s ease;
+            flex: 1;
+            overflow-y: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            touch-action: pan-y;
+        }
+
+        .view-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .card-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            perspective: 1000px;
+            width: 100%;
+            flex: 1;
+            min-height: 0;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 360px;
+            height: 50vh;
+            min-height: 300px;
+            max-height: 550px;
+            position: relative;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-front,
+        .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            border-radius: 20px;
+            background: var(--card-bg);
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            backdrop-filter: blur(8px);
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        .hebrew-word {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: clamp(4.5rem, 16vw, 8.5rem);
+            font-weight: 700;
+            color: var(--icon-color);
+            margin-bottom: 15px;
+            text-align: center;
+            word-break: break-word;
+            line-height: 1.1;
+        }
+
+        .hebrew-word-small {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: clamp(3.5rem, 10vw, 5.5rem);
+            font-weight: 700;
+            color: var(--icon-color);
+            margin-bottom: 10px;
+            line-height: 1.1;
+        }
+
+        .pronunciation {
+            font-size: clamp(0.9rem, 3vw, 1.1rem);
+            color: #7f8c8d;
+            margin-bottom: 10px;
+            font-style: italic;
+        }
+
+        .meaning {
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+            color: var(--text-color);
+            text-align: center;
+            line-height: 1.4;
+            white-space: pre-line;
+            max-height: 40%;
+            overflow-y: auto;
+        }
+
+        .hint-text {
+            font-size: 0.8rem;
+            color: #95a5a6;
+            margin-top: 20px;
+            position: absolute;
+            bottom: 20px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(4px);
+            z-index: 10;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+        }
+
+        .audio-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            color: var(--icon-color);
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .progress {
+            color: white;
+            font-size: 0.9rem;
+            margin-top: 10px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        /* --- [CORRECTED CONTROLS & SEARCH] --- */
+        .controls {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: auto;
+            margin-bottom: 20px;
+            gap: 10px;
+            padding: 0 15px;
+            position: relative;
+            z-index: 50;
+            flex-shrink: 0;
+        }
+
+        .control-group {
+    display: flex;
+    justify-content: space-around; /* 버튼 간격을 균등하게 배분 */
+    gap: 15px; /* 버튼 사이 간격 추가 */
+    margin-bottom: 5px;
+    width: 100%; /* 너비를 꽉 채움 */
+        }
+
+        .icon-btn {
+    background: var(--card-bg); /* 배경색 추가 */
+    border: 1px solid rgba(0, 0, 0, 0.05); /* 연한 테두리 추가 */
+    border-radius: var(--radius-md); /* 둥근 사각형 모양 적용 */
+    color: var(--icon-color);
+    font-size: 1.5rem; /* 아이콘 크기 확대 (1.1rem -> 1.5rem) */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px; /* 아이콘과 텍스트 간격 확대 (4px -> 8px) */
+    padding: 15px 10px; /* 내부 여백 추가 */
+    flex: 1; /* 세 버튼의 너비를 동일하게 설정 */
+    transition: all 0.2s ease;
+}
+
+.icon-btn:active {
+    transform: scale(0.98);
+    box-shadow: none;
+        }
+
+        .icon-btn span {
+    font-size: 0.9rem; /* 글씨 크기 확대 (0.75rem -> 0.9rem) */
+    font-weight: 700; /* 글씨 굵게 */
+    color: var(--text-color); /* 글씨 색상을 기본 텍스트 색상으로 변경 */
+        }
+        
+        #youtube-btn.active {
+            background-color: white;
+            color: #FF0000 !important;
+            opacity: 1 !important;
+            pointer-events: auto !important;
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        #youtube-btn.active span {
+    color: #ff0000 !important;
+}
+
+        .bookmark-btn {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.05);
+            border: none;
+            color: #bdc3c7;
+            font-size: 1.4rem;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+            z-index: 20;
+        }
+
+        .bookmark-btn.active {
+            color: #f1c40f;
+            transform: scale(1.1);
+        }
+
+        .bookmark-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .header-settings-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.4rem;
+            cursor: pointer;
+            z-index: 50;
+            padding: 5px;
+        }
+
+        .incorrect-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 0 5px;
+        }
+
+        .study-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.85rem;
+            white-space: nowrap;
+        }
+
+        .empty-message {
+            color: white;
+            text-align: center;
+            margin-top: 50px;
+            font-size: 1.1rem;
+        }
+
+        /* --- [UPDATED INPUT STYLES] --- */
+        .lesson-filter,
+        .search-box {
+            width: 100%;
+            height: 50px;
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .lesson-filter select,
+        #search-input {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            background: rgba(0, 0, 0, 0.25);
+            color: #ffffff !important;
+            font-size: 1rem;
+            font-weight: bold;
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+            box-sizing: border-box;
+        }
+
+        .lesson-filter select {
+            padding: 0 15px;
+            cursor: pointer;
+        }
+
+        .lesson-filter::after {
+            content: '▼';
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.7);
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Search Input Specifics */
+        #search-input {
+            text-align: left !important;
+            /* 글자 왼쪽 정렬 */
+            padding-left: 20px !important;
+            padding-right: 50px !important;
+            /* 돋보기 공간 확보 */
+        }
+
+        #search-input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+            font-weight: normal;
+        }
+
+        /* Magnifying Glass Icon - Fixed to Right */
+        .search-icon {
+            position: absolute;
+            right: 20px !important;
+            /* 오른쪽 고정 */
+            left: auto !important;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 1.2rem;
+            z-index: 60;
+            pointer-events: none;
+        }
+
+        .word-list-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .word-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: var(--shadow);
+        }
+
+        .word-item .icon-btn.small {
+    padding: 0; /* 패딩 초기화 */
+    box-shadow: none; /* 그림자 제거 */
+    border: none; /* 테두리 제거 */
+    background: var(--input-bg); /* 원래 배경색 유지 */
+    border-radius: 50%; /* 원래 원형 유지 */
+    flex: none; /* flex: 1 속성 취소 */
+    width: 36px; /* 원래 크기 유지 */
+    height: 36px; /* 원래 크기 유지 */
+}
+
+.word-item .icon-btn.small i {
+    font-size: 1rem; /* 아이콘 크기 원래대로 조정 */
+}
+
+        .word-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+            text-align: left;
+        }
+
+        .word-hebrew-list {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--icon-color);
+        }
+
+        .word-item .icon-btn {
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .word-item .icon-btn {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* 시험 화면 스타일 */
+        .test-start-screen,
+        .test-result-screen,
+        .test-quiz-screen {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .quiz-header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: var(--text-color);
+            font-size: 0.9rem;
+        }
+
+        .quiz-question {
+            font-family: 'Frank Ruhl Libre', serif;
+            font-size: clamp(4rem, 12vw, 7rem);
+            font-weight: 700;
+            color: var(--icon-color);
+            margin: 10px 0 30px 0;
+        }
+
+        .quiz-options {
+            width: 100%;
+            display: grid;
+            gap: 8px;
+            grid-template-columns: 1fr;
+        }
+
+        .option-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: #333;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        [data-theme="dark"] .option-btn {
+            background: #2c3e50;
+            border-color: #34495e;
+            color: #ecf0f1;
+        }
+
+        .option-btn.correct {
+            background: #2ecc71 !important;
+            color: white !important;
+            border-color: #2ecc71 !important;
+        }
+
+        .option-btn.wrong {
+            background: #e74c3c !important;
+            color: white !important;
+            border-color: #e74c3c !important;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 12px 24px;
+            border-radius: 25px;
+            border: none;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .primary-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: #95a5a6;
+            color: white;
+        }
+
+        /* 기록 화면 스타일 */
+        .grade-list-container {
+            width: 100%;
+            max-width: 600px;
+            overflow-x: auto;
+        }
+
+        .grade-table {
+            width: 100%;
+            min-width: 300px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border-collapse: collapse;
+        }
+
+        .grade-table th,
+        .grade-table td {
+            padding: 10px 5px;
+            text-align: center;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .grade-table th {
+            background: var(--primary-color);
+            color: white;
+            white-space: nowrap;
+        }
+
+        .score-high {
+            color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        [data-theme="dark"] .score-high {
+            color: #4cd137;
+        }
+
+        .delete-grade-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* 하단 네비게이션 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: var(--bottom-nav-height);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding-bottom: env(safe-area-inset-bottom);
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+        }
+
+        .nav-item {
+            background: none;
+            border: none;
+            color: #95a5a6;
+            font-size: 0.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            padding: 5px;
+            width: 20%;
+        }
+
+        .nav-item i {
+            font-size: 1.3rem;
+            color: inherit;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        /* 모달 스타일 */
+        #settings-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(3px);
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 85%;
+            max-width: 350px;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-height: 85vh;
+            overflow-y: auto;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .close-modal-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-color);
+            cursor: pointer;
+            padding: 5px;
+        }
+
+        .setting-card {
+            background: rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .setting-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            padding-bottom: 5px;
+        }
+
+        .input-group {
+            margin-bottom: 10px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.85rem;
+            color: var(--text-color);
+            font-weight: bold;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            background: rgba(255, 255, 255, 0.8);
+            color: #333;
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+
+        [data-theme="dark"] .input-group input {
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            border-color: #444;
+        }
+
+        .bg-options-container {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .bg-swatch {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .bg-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .bg-swatch.selected {
+            border-color: var(--text-color);
+            transform: scale(1.15);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+
+        /* 미디어 쿼리 (가로모드 대응) */
+        @media (max-width: 400px) {
+            .card {
+                height: 45vh;
+            }
+
+            .controls {
+                gap: 15px;
+            }
+        }
+
+        @media (min-width: 600px),
+        (orientation: landscape) {
+            .controls {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                max-width: 700px;
+            }
+
+            .control-group {
+                width: auto;
+                margin-bottom: 0;
+            }
+
+            .lesson-filter,
+            .search-box {
+                width: 45%;
+                min-width: 200px;
+            }
+        }
+
+        @media (max-height: 500px) and (orientation: landscape) {
+            .container {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+                align-items: flex-start;
+                padding-top: 50px;
+            }
+
+            header {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 40px;
+                background: rgba(0, 0, 0, 0.1);
+                justify-content: center;
+            }
+
+            .card {
+                height: 70vh;
+                max-height: 300px;
+                width: 60vw;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+
+            .controls {
+                position: fixed;
+                bottom: 10px;
+                right: 10px;
+                width: auto;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .search-box,
+            .lesson-filter {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header style="position:relative; width:100%; max-width:600px;">
+            <h1>성서 히브리어 단어장</h1>
+            <button class="header-settings-btn" onclick="openSettings()"><i class="fas fa-cog"></i></button>
+            <div id="header-user-info"
+                style="color:rgba(255,255,255,0.9); font-size:1rem; margin-bottom:10px; font-weight:bold; min-height:1.2em;">
+            </div>
+        </header>
+
+        <div class="view-container" id="flashcard-view">
+            <div class="card-container">
+                <button id="prev-btn" class="nav-btn"><i class="fas fa-chevron-left"></i></button>
+                <div class="card" id="flashcard">
+                    <div class="card-front">
+                        <button class="bookmark-btn" onclick="toggleCurrentBookmark(event)"><i
+                                class="fas fa-star"></i></button>
+                        <button class="audio-btn front-audio"><i class="fas fa-volume-up"></i></button>
+                        <div class="hebrew-word" id="hebrew-text"></div>
+                        <div class="hint-text">터치하여 뜻 보기</div>
+                    </div>
+                    <div class="card-back">
+                        <button class="bookmark-btn" onclick="toggleCurrentBookmark(event)"><i
+                                class="fas fa-star"></i></button>
+                        <button class="audio-btn back-audio"><i class="fas fa-volume-up"></i></button>
+                        <div class="hebrew-word-small" id="hebrew-text-back"></div>
+                        <div class="pronunciation" id="pronunciation"></div>
+                        <div class="meaning" id="meaning"></div>
+                    </div>
+                </div>
+                <button id="next-btn" class="nav-btn"><i class="fas fa-chevron-right"></i></button>
+            </div>
+            <div class="progress">
+                <span id="current-index">0</span> / <span id="total-count">0</span>
+            </div>
+        </div>
+
+        <div class="view-container hidden" id="list-view">
+            <h2 style="color:white; margin-bottom:15px;">전체 단어 목록</h2>
+            <div class="word-list-container" id="word-list"></div>
+        </div>
+
+        <div class="view-container hidden" id="test-view">
+            <div class="test-start-screen" id="test-start-screen">
+                <h2>단어 시험</h2>
+                <p style="margin-bottom:15px; color:var(--text-color);">시험 볼 단원을 선택하세요</p>
+                <select id="test-lesson-select" style="width:100%; margin-bottom:15px; padding:10px;">
+                    <option value="all">전체 범위</option>
+                </select>
+                <div style="margin-bottom:20px; color:var(--text-color);"><label><input type="checkbox"
+                            id="test-reverse-mode"> 뜻 보고 히브리어 맞추기</label></div>
+                <button id="start-test-btn" class="primary-btn">시험 시작</button>
+            </div>
+            <div class="test-quiz-screen hidden" id="test-quiz-screen">
+                <div class="quiz-header"><span id="quiz-timer">00:00</span><span id="quiz-progress">1 /
+                        10</span><span id="quiz-score">점수: 0</span></div>
+                <button class="delete-grade-btn" style="align-self:flex-end; margin-bottom:10px;"
+                    onclick="finishTest(true)">중단</button>
+                <div class="quiz-question" id="quiz-question"></div>
+                <div class="quiz-options" id="quiz-options"></div>
+            </div>
+            <div class="test-result-screen hidden" id="test-result-screen">
+                <h2>시험 결과</h2>
+                <div style="font-size:3rem; font-weight:bold; color:var(--primary-color); margin:20px 0;"><span
+                        id="final-score">0</span> / <span id="total-questions">0</span></div>
+                <div id="result-message" style="margin-bottom:20px; font-size:1.2rem; color:var(--text-color);">
+                </div>
+                <button id="retry-test-btn" class="secondary-btn">다시 하기</button>
+                <button id="new-test-btn" class="primary-btn">다른 단원 선택</button>
+            </div>
+        </div>
+
+        <div class="view-container hidden" id="grade-view">
+            <h2 style="color:white; margin-bottom:15px;">나의 시험 기록</h2>
+            <div class="grade-list-container" id="grade-list-container"></div>
+        </div>
+
+        <div class="view-container hidden" id="incorrect-view">
+            <div class="incorrect-header">
+                <h2 style="color:white; margin:0;">오답 노트 <span id="incorrect-count"
+                        style="font-size:1rem; opacity:0.8;">(0)</span></h2>
+                <button class="study-btn" onclick="startIncorrectStudy()">오답만 학습하기</button>
+            </div>
+            <div class="word-list-container" id="incorrect-list"></div>
+        </div>
+
+        <div class="controls">
+            <button id="exit-study-btn" class="primary-btn hidden" onclick="exitIncorrectStudy()"
+                style="width:auto; background:#e74c3c; margin:0; padding:8px 15px; font-size:0.9rem; flex-shrink:0;">
+                <i class="fas fa-times-circle"></i> 오답노트 종료
+            </button>
+<div class="control-group">
+    <button id="shuffle-btn" class="icon-btn"><i class="fas fa-random"></i><span>섞기</span></button>
+    <button id="sort-btn" class="icon-btn"><i class="fas fa-sort-alpha-down"></i><span>정렬</span></button>
+    <button id="youtube-btn" class="icon-btn" style="opacity:0.5;"><i class="fab fa-youtube"></i><span>유튜브</span></button>
+</div>
+            <div class="lesson-filter">
+                <select id="lesson-select">
+                    <option value="all">전체 보기</option>
+                </select>
+            </div>
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="검색"><i class="fas fa-search search-icon"></i>
+            </div>
+        </div>
+        <nav class="bottom-nav">
+            <button class="nav-item active" data-view="flashcard-view">
+                <i class="fas fa-clone"></i><span>카드</span>
+            </button>
+            <button class="nav-item" data-view="incorrect-view">
+                <i class="fas fa-book-open"></i><span>오답노트</span>
+            </button>
+            <button class="nav-item" data-view="test-view">
+                <i class="fas fa-clipboard-check"></i><span>시험</span>
+            </button>
+            <button class="nav-item" data-view="grade-view">
+                <i class="fas fa-chart-line"></i><span>기록</span>
+            </button>
+            <button class="nav-item" data-view="list-view">
+                <i class="fas fa-list"></i><span>목록</span>
+            </button>
+        </nav>
+    </div>
+
+    <div id="settings-modal" class="hidden">
+        <div class="modal-overlay" onclick="closeSettings()"></div>
+        <div class="modal-content">
+            <button class="close-modal-btn" onclick="closeSettings()"><i class="fas fa-times"></i></button>
+            <h2 style="margin-bottom:20px; color:var(--text-color);">환경설정</h2>
+            <div class="setting-card">
+                <h3>👤 개인정보</h3>
+                <div class="input-group">
+                    <label>이름</label>
+                    <input type="text" id="user-name" placeholder="이름 입력">
+                </div>
+                <div class="input-group">
+                    <label>학번</label>
+                    <input type="text" id="user-student-id" placeholder="학번 입력">
+                </div>
+                <button class="primary-btn" onclick="saveUserInfo()">정보 저장 및 닫기</button>
+            </div>
+            <div class="setting-card">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="color:var(--text-color); font-weight:bold;">🌙 야간 모드</span>
+                    <button class="secondary-btn" style="width:auto; margin:0; padding:5px 15px;"
+                        onclick="toggleTheme()">켜기/끄기</button>
+                </div>
+            </div>
+            <div class="setting-card">
+                <h3>🎨 배경 테마</h3>
+                <div id="bg-theme-list" class="bg-options-container"></div>
+            </div>
+            <div class="setting-card" style="border:1px solid #e74c3c; margin-top:10px;">
+                <button class="delete-grade-btn" style="width:100%; padding:12px; font-size:1rem;"
+                    onclick="resetAllData()">모든 기록 초기화</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        const lessonVideos = {
+            "1": "https://www.youtube.com/watch?v=yuHisJw2kyM&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=2",
+            "2": "https://www.youtube.com/watch?v=K7omSxHYRyk&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=3",
+            "3": "https://www.youtube.com/watch?v=HEIQiGnKReE&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=4",
+            "4": "https://www.youtube.com/watch?v=ac_9Wqj0HuE&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=5",
+            "5": "https://www.youtube.com/watch?v=m1g0cZudaEY&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=6",
+            "6": "https://www.youtube.com/watch?v=9sdlZyOAceU&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=7",
+            "7": "https://www.youtube.com/watch?v=QrxJuKOg1Ig&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=8",
+            "8": "https://www.youtube.com/watch?v=Qabq_4SPxIw&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=9",
+            "9": "https://www.youtube.com/watch?v=6IzDuBwOh7M&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=10",
+            "10": "https://www.youtube.com/watch?v=fRbQNX3oUtw&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=11",
+            "11": "https://www.youtube.com/watch?v=6g3eCZWOiXE&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=12",
+            "12": "https://www.youtube.com/watch?v=SIxt6lyZEwY&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=13",
+            "13": "https://www.youtube.com/watch?v=_YWhN9DoBRw&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=14",
+            "14": "https://www.youtube.com/watch?v=jaa10gmqeeI&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=15",
+            "15": "https://www.youtube.com/watch?v=awXKb0PtDLY&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=16",
+            "16": "https://www.youtube.com/watch?v=pU54wms1J-A&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=17",
+            "17": "https://www.youtube.com/watch?v=f-l7r4pY4c4&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=18",
+            "18": "https://www.youtube.com/watch?v=iXUy1X-WJ7o&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=19",
+            "19": "https://www.youtube.com/watch?v=8FBqJcbLr8k&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=20",
+            "20": "https://www.youtube.com/watch?v=B5-8hhg8EHw&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=21",
+            "21": "https://www.youtube.com/watch?v=DHtvq6-8Gfk&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=22",
+            "22": "https://www.youtube.com/watch?v=XHcbRzWXt_4&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=23",
+            "23": "https://www.youtube.com/watch?v=iWkG92WFBJk&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=24",
+            "24": "https://www.youtube.com/watch?v=mUWNk1QbDK4&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=25",
+            "25": "https://www.youtube.com/watch?v=6MyjDrVwQ4s&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=26",
+            "26": "https://www.youtube.com/watch?v=be3LZrdbiN0&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=27",
+            "27": "https://www.youtube.com/watch?v=dPeJhlpTjAo&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=28",
+            "28": "https://www.youtube.com/watch?v=PnsvqEZo6ro&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=29",
+            "29": "https://www.youtube.com/watch?v=oFGvyTn4GtQ&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=30",
+            "30": "https://www.youtube.com/watch?v=VcnR0jxLics&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=31",
+            "31": "https://www.youtube.com/watch?v=aethoKUo1jY&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=32",
+            "32": "https://www.youtube.com/watch?v=NblN9Uq2iSM&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=33",
+            "33": "https://www.youtube.com/watch?v=KSNO3AyT3DI&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=34",
+            "34": "https://www.youtube.com/watch?v=3J4gdr2bEHo&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=35",
+            "35": "https://www.youtube.com/watch?v=22a9BS4DooA&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=36",
+            "36": "https://www.youtube.com/watch?v=H-i9nuR1qEg&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=37",
+            "37": "https://www.youtube.com/watch?v=dEZ20Dq_UFk&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=38",
+            "38": "https://www.youtube.com/watch?v=-f4MRVZz-BA&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=39",
+            "39": "https://www.youtube.com/watch?v=NuYHRWc8S5Q&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=40",
+            "40": "https://www.youtube.com/watch?v=qqFOHZOlyLM&list=PL8xRIsITrLcA4LXwKkbuolgVClyEWm_Do&index=41"
+        };
+        const words = [
+            { "hebrew": "א", "pronunciation": "[alef / 알렙]", "meaning": "알렙 (초성의 ㅇ)", "lesson": 1 },
+            { "hebrew": "בּ", "pronunciation": "[bet / 베트]", "meaning": "베트 (ㅂ)", "lesson": 1 },
+            { "hebrew": "ב", "pronunciation": "[bet / 베트]", "meaning": "베트 (연한 소리 ㅂ)", "lesson": 1 },
+            { "hebrew": "ג", "pronunciation": "[gimel / 기멜]", "meaning": "기멜 (ㄱ)", "lesson": 1 },
+            { "hebrew": "ד", "pronunciation": "[dalet / 달렛]", "meaning": "달렛 (ㄷ)", "lesson": 1 },
+            { "hebrew": "ה", "pronunciation": "[he / 헤]", "meaning": "헤 (ㅎ)", "lesson": 1 },
+            { "hebrew": "ו", "pronunciation": "[vav / 바브]", "meaning": "바브 (연한 소리 ㅂ)", "lesson": 1 },
+            { "hebrew": "ז", "pronunciation": "[zayin / 자인]", "meaning": "자인 (유성음 ㅈ)", "lesson": 1 },
+            { "hebrew": "ח", "pronunciation": "[het / 헷/헤트]", "meaning": "헷/헤트 (거센 소리 ㅎ)", "lesson": 1 },
+            { "hebrew": "ט", "pronunciation": "[tet / 텟/테트]", "meaning": "텟/테트 (ㅌ)", "lesson": 1 },
+            { "hebrew": "י", "pronunciation": "[yod / 욧/요드]", "meaning": "욧/요드 (반모음)", "lesson": 1 },
+            { "hebrew": "כּ", "pronunciation": "[kaf / 캅/카프]", "meaning": "캅/카프 (ㅋ)", "lesson": 1 },
+            { "hebrew": "כ", "pronunciation": "[kaf / 캅/카프]", "meaning": "캅/카프 (연한 소리 ㅋ)", "lesson": 1 },
+            { "hebrew": "ל", "pronunciation": "[lamed / 라멧/라메드]", "meaning": "라멧/라메드 (닫힌 소리 ㄹ)", "lesson": 1 },
+            { "hebrew": "מ", "pronunciation": "[mem / 멤]", "meaning": "멤 (ㅁ)", "lesson": 1 },
+            { "hebrew": "נ", "pronunciation": "[nun / 눈]", "meaning": "눈 (ㄴ)", "lesson": 1 },
+            { "hebrew": "ס", "pronunciation": "[samekh / 사멕]", "meaning": "사멕 (ㅅ)", "lesson": 1 },
+            { "hebrew": "ע", "pronunciation": "[ayin / 아인]", "meaning": "아인 (후음)", "lesson": 1 },
+            { "hebrew": "פּ", "pronunciation": "[pe / 페]", "meaning": "페 (ㅍ)", "lesson": 1 },
+            { "hebrew": "פ", "pronunciation": "[pe / 페]", "meaning": "페 (연한 소리 ㅍ)", "lesson": 1 },
+            { "hebrew": "צ", "pronunciation": "[tsade / 짜데/차데]", "meaning": "짜데/차데 (ㅊ)", "lesson": 1 },
+            { "hebrew": "ק", "pronunciation": "[qof / 콮/코프]", "meaning": "콮/코프 (ㅋ)", "lesson": 1 },
+            { "hebrew": "ר", "pronunciation": "[resh / 레쉬]", "meaning": "레쉬 (ㄹ)", "lesson": 1 },
+            { "hebrew": "שׂ", "pronunciation": "[sin / 신]", "meaning": "신 (ㅅ)", "lesson": 1 },
+            { "hebrew": "שׁ", "pronunciation": "[shin / 쉰]", "meaning": "쉰 (ㅅ)", "lesson": 1 },
+            { "hebrew": "ת", "pronunciation": "[tav / 타브]", "meaning": "타브 (ㅌ)", "lesson": 1 },
+            { "hebrew": "בַּת", "pronunciation": "[bat / 밧]", "meaning": "딸", "lesson": 2 },
+            { "hebrew": "אֲכָל", "pronunciation": "[a:chal / 아칼]", "meaning": "그가 먹었다", "lesson": 2 },
+            { "hebrew": "זָכָר", "pronunciation": "[tza:kar / 짜카르]", "meaning": "그가 기억하였다", "lesson": 2 },
+            { "hebrew": "כָּבֵד", "pronunciation": "[ka:ve:d / 카베드]", "meaning": "그는 무겁다", "lesson": 2 },
+            { "hebrew": "שָׁלַח", "pronunciation": "[sha:lah / 샬라흐]", "meaning": "그가 보냈다", "lesson": 2 },
+            { "hebrew": "אב", "pronunciation": "[av / 아브]", "meaning": "아버지, 조상", "lesson": 2 },
+            { "hebrew": "אֵם", "pronunciation": "[e:m / 엠]", "meaning": "어머니", "lesson": 2 },
+            { "hebrew": "אָח", "pronunciation": "[a:ht / 아흐]", "meaning": "형제", "lesson": 2 },
+            { "hebrew": "אָחוֹת", "pronunciation": "[a:hto-t / 아호트]", "meaning": "자매", "lesson": 2 },
+            { "hebrew": "בֶּן", "pronunciation": "[be:n / 벤]", "meaning": "아들, 자손", "lesson": 2 },
+            { "hebrew": "יוֹם", "pronunciation": "[yo-m / 욤]", "meaning": "날, 시간, 생애", "lesson": 3 },
+            { "hebrew": "מִלְחָמָה", "pronunciation": "[milhta:ma- / 밀하마]", "meaning": "전투, 전쟁", "lesson": 3 },
+            { "hebrew": "מֶלֶךְ", "pronunciation": "[melech / 멜렉]", "meaning": "왕", "lesson": 3 },
+            { "hebrew": "מַלְכוּת", "pronunciation": "[malchu-t / 말쿠트]", "meaning": "왕국, 통치", "lesson": 3 },
+            { "hebrew": "עִיר", "pronunciation": "[i-r / 이르]", "meaning": "도시, 성읍", "lesson": 3 },
+            { "hebrew": "אל", "pronunciation": "[e:l / 엘]", "meaning": "하나님, 신", "lesson": 3 },
+            { "hebrew": "אֱלֹהִים", "pronunciation": "[elo:hi-m / 엘로힘]", "meaning": "하나님, 신", "lesson": 3 },
+            { "hebrew": "אֶרֶץ", "pronunciation": "[eretz / 에레츠]", "meaning": "나라, 땅", "lesson": 3 },
+            { "hebrew": "דָּבָר", "pronunciation": "[da:va:r / 다바르]", "meaning": "말, 물건", "lesson": 3 },
+            { "hebrew": "יָד", "pronunciation": "[ya:d / 야드]", "meaning": "손, 힘", "lesson": 3 },
+            { "hebrew": "הֵם / הֵמָּה", "pronunciation": "[he:mma-/he:m / 헴마/헴]", "meaning": "그 남자들 (m)", "lesson": 4 },
+            { "hebrew": "הֵנָּה", "pronunciation": "[he:nna- / 헨나]", "meaning": "그 여자들 (f)", "lesson": 4 },
+            { "hebrew": "אַתֶּם", "pronunciation": "[attem / 앗템]", "meaning": "너희들(남자) (mp)", "lesson": 4 },
+            { "hebrew": "אַתֵּן / אַתֵּנָה", "pronunciation": "[atte:na-/atte:n / 앗테나/앗텐]", "meaning": "너희들(여자) (fp)", "lesson": 4 },
+            { "hebrew": "אֲנַחְנוּ", "pronunciation": "[anahtnu- / 아나흐누]", "meaning": "우리", "lesson": 4 },
+            { "hebrew": "הוּא", "pronunciation": "[hu- / 후]", "meaning": "그 남자, 그것", "lesson": 4 },
+            { "hebrew": "הִיא", "pronunciation": "[hi- / 히]", "meaning": "그 여자, 그것", "lesson": 4 },
+            { "hebrew": "אַתָּה", "pronunciation": "[atta- / 앗타]", "meaning": "너(남자) (ms)", "lesson": 4 },
+            { "hebrew": "אַתְּ", "pronunciation": "[att / 앗]", "meaning": "너(여자) (fs)", "lesson": 4 },
+            { "hebrew": "אֲנִי / אָנֹכִי", "pronunciation": "[a:no-chi-/ani- / 아노키/아니]", "meaning": "나", "lesson": 4 },
+            { "hebrew": "כֹּהֵן", "pronunciation": "[kohe:n / 코헨]", "meaning": "제사장", "lesson": 5 },
+            { "hebrew": "הָלַךְ", "pronunciation": "[ha:lach / 할라크]", "meaning": "그가 걸었다, 갔다", "lesson": 5 },
+            { "hebrew": "לָקַח", "pronunciation": "[la:qaht / 라카흐]", "meaning": "그가 취했다, 잡았다", "lesson": 5 },
+            { "hebrew": "נָתַן", "pronunciation": "[na:tan / 나탄]", "meaning": "그가 주었다, 선물했다", "lesson": 5 },
+            { "hebrew": "שָׁמַע", "pronunciation": "[sha:ma / 샤마]", "meaning": "그가 들었다", "lesson": 5 },
+            { "hebrew": "אָדָם", "pronunciation": "[a:da:m / 아담]", "meaning": "사람, 아담", "lesson": 5 },
+            { "hebrew": "אִישׁ", "pronunciation": "[i-sh / 이쉬]", "meaning": "사람, 남편", "lesson": 5 },
+            { "hebrew": "אִשָּׁה", "pronunciation": "[ishsha- / 이샤]", "meaning": "여자, 아내", "lesson": 5 },
+            { "hebrew": "בַּיִת", "pronunciation": "[bait / 바이트]", "meaning": "집, 대궐", "lesson": 5 },
+            { "hebrew": "דֶרֶךְ", "pronunciation": "[derech / 데레크]", "meaning": "길", "lesson": 5 },
+            { "hebrew": "עוֹלָם", "pronunciation": "[o-la:m / 올람]", "meaning": "늘(영원히), 고대", "lesson": 6 },
+            { "hebrew": "בָּטַח", "pronunciation": "[ba:taht / 바타흐]", "meaning": "믿다", "lesson": 6 },
+            { "hebrew": "כָּתַב", "pronunciation": "[ka:tav / 카타브]", "meaning": "쓰다", "lesson": 6 },
+            { "hebrew": "בְּגֶד", "pronunciation": "[beged / 베게드]", "meaning": "옷", "lesson": 6 },
+            { "hebrew": "מִשְׁפָּחָה", "pronunciation": "[mishpa:hta- / 미쉬파하]", "meaning": "씨족, 가계", "lesson": 6 },
+            { "hebrew": "נָבִיא", "pronunciation": "[na:bi- / 나비]", "meaning": "예언자", "lesson": 6 },
+            { "hebrew": "שָׁמַר", "pronunciation": "[sha:mar / 샤마르]", "meaning": "보호하다, 지키다", "lesson": 6 },
+            { "hebrew": "שָׁפָט", "pronunciation": "[sha:fat / 샤파트]", "meaning": "심판하다, 결정하다", "lesson": 6 },
+            { "hebrew": "נַעַר", "pronunciation": "[naar / 나아르]", "meaning": "소년", "lesson": 6 },
+            { "hebrew": "נֶפֶשׁ", "pronunciation": "[nefesh / 네페쉬]", "meaning": "목숨, 혼, 인격", "lesson": 6 },
+            { "hebrew": "שֵׁם", "pronunciation": "[she:m / 셈]", "meaning": "이름, 명성", "lesson": 7 },
+            { "hebrew": "דָּרַשׁ", "pronunciation": "[da:rash / 다라쉬]", "meaning": "찾다, 묻다", "lesson": 7 },
+            { "hebrew": "זָבַח", "pronunciation": "[tza:vaht / 짜바흐]", "meaning": "희생제사를 드리다 / 희생제물을 도살하다", "lesson": 7 },
+            { "hebrew": "יָדַע", "pronunciation": "[ya:da / 야다]", "meaning": "알다, 주의하다, 동침하다", "lesson": 7 },
+            { "hebrew": "יָשָׁב", "pronunciation": "[ya:shav / 야샤브]", "meaning": "앉다, 거주하다", "lesson": 7 },
+            { "hebrew": "זֶבַח", "pronunciation": "[tzevaht / 체바흐]", "meaning": "희생제물", "lesson": 7 },
+            { "hebrew": "לֵב / לֵבָב", "pronunciation": "[le:va:v/le:v / 레바브/레브]", "meaning": "마음", "lesson": 7 },
+            { "hebrew": "מִזְבֵּחַ", "pronunciation": "[mitzbe:hta / 미즈베아흐]", "meaning": "제단", "lesson": 7 },
+            { "hebrew": "מִשְׁפָּט", "pronunciation": "[mishpa:t / 미쉬파트]", "meaning": "심판, 결정, 공정", "lesson": 7 },
+            { "hebrew": "עַם", "pronunciation": "[am / 암]", "meaning": "백성", "lesson": 7 },
+            { "hebrew": "לִפְנֵי", "pronunciation": "[lifne- / 리프네]", "meaning": "~ 앞에", "lesson": 8 },
+            { "hebrew": "מִן", "pronunciation": "[min / 민]", "meaning": "~으로부터", "lesson": 8 },
+            { "hebrew": "עַל", "pronunciation": "[al / 알]", "meaning": "~ 위에, ~ 때문에", "lesson": 8 },
+            { "hebrew": "עִם", "pronunciation": "[im / 임]", "meaning": "~과 더불어", "lesson": 8 },
+            { "hebrew": "תַּחַת", "pronunciation": "[tahtat / 타하트]", "meaning": "밑에, ~ 아래에", "lesson": 8 },
+            { "hebrew": "אֶל", "pronunciation": "[el / 엘]", "meaning": "~에게, ~을 위하여", "lesson": 8 },
+            { "hebrew": "בְּ", "pronunciation": "[b / ㅂ]", "meaning": "~안에, ~에(장소)", "lesson": 8 },
+            { "hebrew": "בְּתוֹךְ", "pronunciation": "[beto-ch / 베토크]", "meaning": "~ 가운데", "lesson": 8 },
+            { "hebrew": "כְּ", "pronunciation": "[k / ㅋ]", "meaning": "~과 같은(유사), ~처럼", "lesson": 8 },
+            { "hebrew": "לְ", "pronunciation": "[l / ㄹ]", "meaning": "~에게, ~을 위해", "lesson": 8 },
+            { "hebrew": "טָמֵא", "pronunciation": "[ta:me: / 타메]", "meaning": "부정한, 불순한", "lesson": 9 },
+            { "hebrew": "יָשָׁר", "pronunciation": "[ya:sha:r / 야샤르]", "meaning": "올곧은, 바른", "lesson": 9 },
+            { "hebrew": "קָדוֹשׁ", "pronunciation": "[qa:do-sh / 카도쉬]", "meaning": "거룩한", "lesson": 9 },
+            { "hebrew": "רַב", "pronunciation": "[rav / 라브]", "meaning": "많은, 큰", "lesson": 9 },
+            { "hebrew": "רָשָׁע", "pronunciation": "[ra:sha: / 라샤]", "meaning": "죄지은, 사악한", "lesson": 9 },
+            { "hebrew": "גָדוֹל", "pronunciation": "[ga:do-l / 가돌]", "meaning": "거대한, 큰", "lesson": 9 },
+            { "hebrew": "חַי", "pronunciation": "[htay / 하이]", "meaning": "살아 있는", "lesson": 9 },
+            { "hebrew": "חָכָם", "pronunciation": "[hta:cha:m / 하캄]", "meaning": "현명한, 숙련된", "lesson": 9 },
+            { "hebrew": "טָהוֹר", "pronunciation": "[ta:ho-r / 타호르]", "meaning": "깨끗한, 순수한", "lesson": 9 },
+            { "hebrew": "טוֹב", "pronunciation": "[to-b / 토브]", "meaning": "좋은, 즐거운", "lesson": 9 },
+            { "hebrew": "מַיִם", "pronunciation": "[maim / 마임]", "meaning": "물", "lesson": 10 },
+            { "hebrew": "שָׁמַיִם", "pronunciation": "[sha:maim / 샤마임]", "meaning": "하늘", "lesson": 10 },
+            { "hebrew": "כָּרַת", "pronunciation": "[ka:rat / 카라트]", "meaning": "자르다, 언약을 맺다", "lesson": 10 },
+            { "hebrew": "מָלַךְ", "pronunciation": "[ma:lak / 말라크]", "meaning": "다스리다, 왕노릇하다", "lesson": 10 },
+            { "hebrew": "שָׁכַב", "pronunciation": "[sha:chav / 샤카브]", "meaning": "눕다", "lesson": 10 },
+            { "hebrew": "אַחֵר", "pronunciation": "[ahte:r / 아헤르]", "meaning": "다른(他)", "lesson": 10 },
+            { "hebrew": "בְּרִית", "pronunciation": "[beri-t / 베리트]", "meaning": "언약", "lesson": 10 },
+            { "hebrew": "זָקֵן", "pronunciation": "[tza:qen / 짜켄]", "meaning": "늙은, 손 위의", "lesson": 10 },
+            { "hebrew": "חָזָק", "pronunciation": "[hta:tza:q / 하짝]", "meaning": "굳은, 강한", "lesson": 10 },
+            { "hebrew": "לֶחֶם", "pronunciation": "[lehtem / 레헴]", "meaning": "빵, 음식", "lesson": 10 },
+            { "hebrew": "תּוֹרָה", "pronunciation": "[to-ra- / 토라]", "meaning": "가르침, 율법", "lesson": 11 },
+            { "hebrew": "אָמַר", "pronunciation": "[a:mar / 아마르]", "meaning": "말하다", "lesson": 11 },
+            { "hebrew": "עָבַר", "pronunciation": "[a:var / 아바르]", "meaning": "건너가다", "lesson": 11 },
+            { "hebrew": "עָמַד", "pronunciation": "[a:mad / 아마드]", "meaning": "서다", "lesson": 11 },
+            { "hebrew": "פָּקַד", "pronunciation": "[pa:qad / 파카드]", "meaning": "방문하다, 돌보다", "lesson": 11 },
+            { "hebrew": "אֹהֶל", "pronunciation": "[o:hel / 오헬]", "meaning": "천막, 거주지", "lesson": 11 },
+            { "hebrew": "סֵפֶר", "pronunciation": "[se:per / 세페르]", "meaning": "책, 문서", "lesson": 11 },
+            { "hebrew": "קֹדֶשׁ", "pronunciation": "[qo:desh / 코데쉬]", "meaning": "거룩", "lesson": 11 },
+            { "hebrew": "קוֹל", "pronunciation": "[qo-l / 콜]", "meaning": "목소리, 소리", "lesson": 11 },
+            { "hebrew": "שָׁנָה", "pronunciation": "[sha:na- / 샤나]", "meaning": "해(年)", "lesson": 11 },
+            { "hebrew": "עֶבֶד", "pronunciation": "[eved / 에베드]", "meaning": "노예, 종", "lesson": 12 },
+            { "hebrew": "גָאַל", "pronunciation": "[ga:al / 가알]", "meaning": "되사다, 되찾다", "lesson": 12 },
+            { "hebrew": "חָזַק", "pronunciation": "[hta:tzaq / 하짝]", "meaning": "강하다, 용감하다", "lesson": 12 },
+            { "hebrew": "אָדוֹן", "pronunciation": "[a:do-n / 아돈]", "meaning": "주, 주인", "lesson": 12 },
+            { "hebrew": "זָהָב", "pronunciation": "[tza:hav / 짜하브]", "meaning": "금", "lesson": 12 },
+            { "hebrew": "כֹּל", "pronunciation": "[ko:l / 콜]", "meaning": "모든, 각각의, 전체", "lesson": 12 },
+            { "hebrew": "נָפַל", "pronunciation": "[na:pal / 나팔]", "meaning": "떨어지다", "lesson": 12 },
+            { "hebrew": "עָבַד", "pronunciation": "[a:vad / 아바드]", "meaning": "섬기다, 일하다, 예배하다", "lesson": 12 },
+            { "hebrew": "כֶסֶף", "pronunciation": "[kesep / 케세프]", "meaning": "돈, 은", "lesson": 12 },
+            { "hebrew": "מָקוֹם", "pronunciation": "[ma:qo-m / 마콤]", "meaning": "장소", "lesson": 12 },
+            { "hebrew": "בָּרָא", "pronunciation": "[ba:ra: / 바라]", "meaning": "창조하다", "lesson": 13 },
+            { "hebrew": "חָטָא", "pronunciation": "[hta:ta: / 하타]", "meaning": "죄(짓다)", "lesson": 13 },
+            { "hebrew": "מָצָא", "pronunciation": "[ma:tza: / 마짜]", "meaning": "발견하다", "lesson": 13 },
+            { "hebrew": "נָשָׂא", "pronunciation": "[na:sa: / 나사]", "meaning": "들다, 옮기다, 용서하다", "lesson": 13 },
+            { "hebrew": "קָרָא", "pronunciation": "[qa:ra: / 카라]", "meaning": "부르다, 소리 내어 읽다", "lesson": 13 },
+            { "hebrew": "בֹּקֶר", "pronunciation": "[bo:qer / 보케르]", "meaning": "아침", "lesson": 13 },
+            { "hebrew": "חֹדֶשׁ", "pronunciation": "[hto:desh / 호데쉬]", "meaning": "초승달, 달", "lesson": 13 },
+            { "hebrew": "לַיְלָה", "pronunciation": "[laila- / 라일라]", "meaning": "밤(m)", "lesson": 13 },
+            { "hebrew": "עֶרֶב", "pronunciation": "[erev / 에레브]", "meaning": "저녁", "lesson": 13 },
+            { "hebrew": "עֵת", "pronunciation": "[e:t / 에트]", "meaning": "시간", "lesson": 13 },
+            { "hebrew": "נָגַע", "pronunciation": "[na:ga / 나가]", "meaning": "만지다, 때리다", "lesson": 14 },
+            { "hebrew": "נָגַשׁ", "pronunciation": "[na:gash / 나가쉬]", "meaning": "다가가다", "lesson": 14 },
+            { "hebrew": "נָסַע", "pronunciation": "[na:sa / 나사]", "meaning": "출발하다", "lesson": 14 },
+            { "hebrew": "עָשָׂה", "pronunciation": "[a:sa- / 아사]", "meaning": "만들다, 하다", "lesson": 14 },
+            { "hebrew": "רָאָה", "pronunciation": "[ra:a- / 라아]", "meaning": "보다, 알다", "lesson": 14 },
+            { "hebrew": "בָּכָה", "pronunciation": "[ba:cha- / 바카]", "meaning": "울다", "lesson": 14 },
+            { "hebrew": "בָּנָה", "pronunciation": "[ba:na- / 바나]", "meaning": "짓다, 요새를 쌓다", "lesson": 14 },
+            { "hebrew": "גָלָה", "pronunciation": "[ga:la- / 갈라]", "meaning": "드러내다, 이주하다", "lesson": 14 },
+            { "hebrew": "חָזָה", "pronunciation": "[hta:za- / 하자]", "meaning": "보다, 환상을 보다", "lesson": 14 },
+            { "hebrew": "כָּלָה", "pronunciation": "[ka:la- / 칼라]", "meaning": "멈추다, 끝나다", "lesson": 14 },
+            { "hebrew": "פֶה", "pronunciation": "[pe / 페]", "meaning": "입", "lesson": 15 },
+            { "hebrew": "פָּנִים", "pronunciation": "[pa:ni-m / 파님]", "meaning": "얼굴", "lesson": 15 },
+            { "hebrew": "רֹאשׁ", "pronunciation": "[ro:sh / 로쉬]", "meaning": "머리", "lesson": 15 },
+            { "hebrew": "רֵאשִׁית", "pronunciation": "[re:shi-t / 레쉬트]", "meaning": "처음", "lesson": 15 },
+            { "hebrew": "רֶגֶל", "pronunciation": "[regel / 레겔]", "meaning": "발(f)", "lesson": 15 },
+            { "hebrew": "אֹזֶן", "pronunciation": "[o:zen / 오젠]", "meaning": "귀(f)", "lesson": 15 },
+            { "hebrew": "אַף", "pronunciation": "[ap / 아프]", "meaning": "코, 분노", "lesson": 15 },
+            { "hebrew": "זְרוֹעַ", "pronunciation": "[zero-a / 제로아]", "meaning": "팔 (f)", "lesson": 15 },
+            { "hebrew": "כָּתֵף", "pronunciation": "[ka:te:p / 카테프]", "meaning": "어깨 (f)", "lesson": 15 },
+            { "hebrew": "עַיִן", "pronunciation": "[ain / 아인]", "meaning": "눈 (m/f)", "lesson": 15 },
+            { "hebrew": "זֹאת", "pronunciation": "[zo:t / 조트]", "meaning": "이것 (f)", "lesson": 16 },
+            { "hebrew": "יָכֹל", "pronunciation": "[ya:ko:l / 야콜]", "meaning": "할 수 있다", "lesson": 16 },
+            { "hebrew": "יָצָא", "pronunciation": "[ya:tza: / 야짜]", "meaning": "나가다", "lesson": 16 },
+            { "hebrew": "יָרַד", "pronunciation": "[ya:rad / 야라드]", "meaning": "내려가다", "lesson": 16 },
+            { "hebrew": "עָלָה", "pronunciation": "[a:la- / 알라]", "meaning": "올라가다", "lesson": 16 },
+            { "hebrew": "אַחַר", "pronunciation": "[ahar / 아하르]", "meaning": "뒤에, 후에", "lesson": 16 },
+            { "hebrew": "אוֹיֵב", "pronunciation": "[o:e:v / 오예브]", "meaning": "원수", "lesson": 16 },
+            { "hebrew": "אֵלֶּה", "pronunciation": "[e:le / 엘레]", "meaning": "이것들", "lesson": 16 },
+            { "hebrew": "אֱנוֹשׁ", "pronunciation": "[eno-sh / 에노쉬]", "meaning": "사람", "lesson": 16 },
+            { "hebrew": "זֶה", "pronunciation": "[ze / 제]", "meaning": "이것(m)", "lesson": 16 },
+            { "hebrew": "יָטַב", "pronunciation": "[ya:tav / 야타브]", "meaning": "좋다", "lesson": 17 },
+            { "hebrew": "יָלַד", "pronunciation": "[ya:lad / 야라드]", "meaning": "낳다", "lesson": 17 },
+            { "hebrew": "יָצַר", "pronunciation": "[ya:tzar / 야짜르]", "meaning": "모양짓다, 창조하다", "lesson": 17 },
+            { "hebrew": "יָרֵא", "pronunciation": "[ya:re: / 야레]", "meaning": "무서워하다, 두려워하다", "lesson": 17 },
+            { "hebrew": "יָרַשׁ", "pronunciation": "[ya:rash / 야라쉬]", "meaning": "물려받다", "lesson": 17 },
+            { "hebrew": "בְּהֵמָה", "pronunciation": "[behe:ma- / 베헤마]", "meaning": "동물, 가축", "lesson": 17 },
+            { "hebrew": "בָּקָר", "pronunciation": "[ba:qa:r / 바카르]", "meaning": "짐승 떼(소떼)", "lesson": 17 },
+            { "hebrew": "פַּר", "pronunciation": "[par / 파르]", "meaning": "황소", "lesson": 17 },
+            { "hebrew": "צֹאן", "pronunciation": "[tzo:n / 쪼온]", "meaning": "양떼, 염소 떼", "lesson": 17 },
+            { "hebrew": "יָבֵשׁ", "pronunciation": "[ya:ve:sh / 야베쉬]", "meaning": "마르다, 시들다", "lesson": 17 },
+            { "hebrew": "רוּחַ", "pronunciation": "[ru-ah / 루아흐]", "meaning": "숨, 바람, 영(f)", "lesson": 18 },
+            { "hebrew": "אָבַד", "pronunciation": "[a:vad / 아바드]", "meaning": "멸망하다", "lesson": 18 },
+            { "hebrew": "אָבָה", "pronunciation": "[a:va- / 아바]", "meaning": "기꺼이 하다, 원하다", "lesson": 18 },
+            { "hebrew": "הָיָה", "pronunciation": "[ha:ya- / 하야]", "meaning": "있다, 발생하다", "lesson": 18 },
+            { "hebrew": "חָיָה", "pronunciation": "[hta:ya- / 하야]", "meaning": "살아있다", "lesson": 18 },
+            { "hebrew": "גּוֹי", "pronunciation": "[go-y / 고이]", "meaning": "민족, 이방", "lesson": 18 },
+            { "hebrew": "דָּם", "pronunciation": "[da:m / 담]", "meaning": "피", "lesson": 18 },
+            { "hebrew": "הַר", "pronunciation": "[har / 하르]", "meaning": "산, 언덕", "lesson": 18 },
+            { "hebrew": "יָם", "pronunciation": "[ya:m / 얌]", "meaning": "바다", "lesson": 18 },
+            { "hebrew": "צָבָא", "pronunciation": "[tza:va: / 짜바]", "meaning": "군대", "lesson": 18 },
+            { "hebrew": "כִּי", "pronunciation": "[ki- / 키]", "meaning": "왜냐하면, 정말로", "lesson": 19 },
+            { "hebrew": "כִּי־אִם", "pronunciation": "[ki-im / 키임]", "meaning": "만약 ~하지 않으면", "lesson": 19 },
+            { "hebrew": "לָכֵן", "pronunciation": "[la:che:n / 라켄]", "meaning": "그러므로", "lesson": 19 },
+            { "hebrew": "לְמַעַן", "pronunciation": "[lmaan / 르마안]", "meaning": "~하기 위해서", "lesson": 19 },
+            { "hebrew": "פֶּן", "pronunciation": "[pen / 펜]", "meaning": "~하지 않도록", "lesson": 19 },
+            { "hebrew": "אָז", "pronunciation": "[a:z / 아즈]", "meaning": "그때에", "lesson": 19 },
+            { "hebrew": "אִם", "pronunciation": "[im / 임]", "meaning": "만약", "lesson": 19 },
+            { "hebrew": "בִּלְתִּי", "pronunciation": "[bilthi- / 빌티]", "meaning": "~ 않은, ~ 말고", "lesson": 19 },
+            { "hebrew": "גַּם", "pronunciation": "[gam / 감]", "meaning": "또한, 더욱이", "lesson": 19 },
+            { "hebrew": "כֹּה", "pronunciation": "[ko:h / 코]", "meaning": "그때에", "lesson": 19 },
+            { "hebrew": "עַד", "pronunciation": "[ad / 아드]", "meaning": "~할 때까지", "lesson": 20 },
+            { "hebrew": "אֲדָמָה", "pronunciation": "[ada:ma- / 아다마]", "meaning": "지면, 땅", "lesson": 20 },
+            { "hebrew": "אָהַב", "pronunciation": "[a:hav / 아하브]", "meaning": "사랑하다", "lesson": 20 },
+            { "hebrew": "יָצַק", "pronunciation": "[ya:tzaq / 야짝]", "meaning": "쏟아내다", "lesson": 20 },
+            { "hebrew": "שָׂנֵא", "pronunciation": "[sa:ne: / 사네]", "meaning": "미워하다, 원수되다", "lesson": 20 },
+            { "hebrew": "שָׁפַךְ", "pronunciation": "[sha:fach / 샤파크]", "meaning": "쏟다, 붓다", "lesson": 20 },
+            { "hebrew": "אוֹר", "pronunciation": "[o-r / 오르]", "meaning": "빛(f)", "lesson": 20 },
+            { "hebrew": "בֵּין", "pronunciation": "[be:in / 베인]", "meaning": "~ 사이에", "lesson": 20 },
+            { "hebrew": "חֶסֶד", "pronunciation": "[htesed / 헤세드]", "meaning": "신의, 도리", "lesson": 20 },
+            { "hebrew": "חֹשֶׁךְ", "pronunciation": "[hta:shech / 호쉐크]", "meaning": "어둠", "lesson": 20 },
+            { "hebrew": "שָׁם", "pronunciation": "[sha:m / 샴]", "meaning": "거기", "lesson": 21 },
+            { "hebrew": "אָסַר", "pronunciation": "[a:sar / 아사르]", "meaning": "결박하다", "lesson": 21 },
+            { "hebrew": "חָנָה", "pronunciation": "[hta:na- / 하나]", "meaning": "진치다", "lesson": 21 },
+            { "hebrew": "חָרָה", "pronunciation": "[hta:ra- / 하라]", "meaning": "뜨거워지다, 화나다", "lesson": 21 },
+            { "hebrew": "לָכַד", "pronunciation": "[la:chad / 라카드]", "meaning": "붙잡다", "lesson": 21 },
+            { "hebrew": "גִּבּוֹר", "pronunciation": "[gibbo-r / 기보르]", "meaning": "용사", "lesson": 21 },
+            { "hebrew": "דּוֹר", "pronunciation": "[do-r / 도르]", "meaning": "세대", "lesson": 21 },
+            { "hebrew": "חוֹמָה", "pronunciation": "[hto-ma- / 호마]", "meaning": "벽", "lesson": 21 },
+            { "hebrew": "חֵמָה", "pronunciation": "[hte:ma- / 헤마]", "meaning": "열기, 분노", "lesson": 21 },
+            { "hebrew": "עַתָּה", "pronunciation": "[aththa- / 앗타]", "meaning": "지금, 이제", "lesson": 21 },
+            { "hebrew": "שָׁלוֹם", "pronunciation": "[sha:lo-m / 샬롬]", "meaning": "평화, 평안", "lesson": 22 },
+            { "hebrew": "מָלֵא", "pronunciation": "[ma:le: / 말레]", "meaning": "가득 차다, 채우다", "lesson": 22 },
+            { "hebrew": "עָזָב", "pronunciation": "[a:zav / 아자브]", "meaning": "저버리다", "lesson": 22 },
+            { "hebrew": "קָרַב", "pronunciation": "[qa:rav / 카라브]", "meaning": "다가가다", "lesson": 22 },
+            { "hebrew": "שָׁתָה", "pronunciation": "[sha:ta- / 샤타]", "meaning": "마시다", "lesson": 22 },
+            { "hebrew": "אֵין", "pronunciation": "[e-n / 엔]", "meaning": "~이 없다", "lesson": 22 },
+            { "hebrew": "יֵשׁ", "pronunciation": "[ye:sh / 예쉬]", "meaning": "~이 있다", "lesson": 22 },
+            { "hebrew": "כָּבוֹד", "pronunciation": "[ka:vo-d / 카보드]", "meaning": "영광, 영예", "lesson": 22 },
+            { "hebrew": "מְאֹד", "pronunciation": "[meo:d / 메오드]", "meaning": "매우", "lesson": 22 },
+            { "hebrew": "מַלְאָךְ", "pronunciation": "[mala:ch / 말라크]", "meaning": "심부름꾼, 천사", "lesson": 22 },
+            { "hebrew": "עָוֹן", "pronunciation": "[a:vho-n / 아본]", "meaning": "죄악, 벌", "lesson": 23 },
+            { "hebrew": "בָּחַר", "pronunciation": "[ba:htar / 바하르]", "meaning": "선택하다", "lesson": 23 },
+            { "hebrew": "בָּרַח", "pronunciation": "[ba:raht / 바라흐]", "meaning": "도망치다", "lesson": 23 },
+            { "hebrew": "חַטָּאת", "pronunciation": "[htatta-t / 핫타트]", "meaning": "죄", "lesson": 23 },
+            { "hebrew": "חֹק", "pronunciation": "[hto-q / 호크]", "meaning": "규례, 법규", "lesson": 23 },
+            { "hebrew": "מִצְוָה", "pronunciation": "[mitzvha- / 미츠바]", "meaning": "명령, 계명", "lesson": 23 },
+            { "hebrew": "דָּבַק", "pronunciation": "[da:vaq / 다바크]", "meaning": "달라붙다", "lesson": 23 },
+            { "hebrew": "חָפֵץ", "pronunciation": "[hta:fe:tz / 하페츠]", "meaning": "기뻐하다, 바라다", "lesson": 23 },
+            { "hebrew": "נֶגֶד", "pronunciation": "[neged / 네게드]", "meaning": "~ 앞에", "lesson": 23 },
+            { "hebrew": "סָבִיב", "pronunciation": "[ssa:vi:v / 사비브]", "meaning": "둘레에", "lesson": 23 },
+            { "hebrew": "קוּם", "pronunciation": "[qu-m / 쿰]", "meaning": "일어나다, 서다", "lesson": 24 },
+            { "hebrew": "רוּם", "pronunciation": "[ru-m / 룸]", "meaning": "높아지다", "lesson": 24 },
+            { "hebrew": "רוּץ", "pronunciation": "[ru-tz / 루츠]", "meaning": "달리다", "lesson": 24 },
+            { "hebrew": "שִׂים", "pronunciation": "[ssi-m / 심]", "meaning": "두다, 놓다", "lesson": 24 },
+            { "hebrew": "שׁוּב", "pronunciation": "[shu-v / 슈브]", "meaning": "돌이키다, 회개하다", "lesson": 24 },
+            { "hebrew": "בּוֹא", "pronunciation": "[bo- / 보]", "meaning": "오다, 들어가다", "lesson": 24 },
+            { "hebrew": "בּוֹשׁ", "pronunciation": "[bo-sh / 보쉬]", "meaning": "부끄러워하다", "lesson": 24 },
+            { "hebrew": "בִּין", "pronunciation": "[bi-n / 빈]", "meaning": "깨닫다, 분간하다", "lesson": 24 },
+            { "hebrew": "מוּת", "pronunciation": "[mu-t / 무트]", "meaning": "죽다", "lesson": 24 },
+            { "hebrew": "סוּר", "pronunciation": "[su-r / 수르]", "meaning": "비키다", "lesson": 24 },
+            { "hebrew": "שָׂדֶה", "pronunciation": "[ssa:de / 사데]", "meaning": "들", "lesson": 25 },
+            { "hebrew": "אָסַף", "pronunciation": "[a:saf / 아사프]", "meaning": "모으다", "lesson": 25 },
+            { "hebrew": "חָשַׁב", "pronunciation": "[hta:shav / 하샤브]", "meaning": "생각하다", "lesson": 25 },
+            { "hebrew": "יָסַף", "pronunciation": "[ya:saf / 야사프]", "meaning": "더하다, 반복하다", "lesson": 25 },
+            { "hebrew": "עָנָה", "pronunciation": "[a:na- / 아나]", "meaning": "대답하다, 낮아지다", "lesson": 25 },
+            { "hebrew": "אֶבֶן", "pronunciation": "[even / 에벤]", "meaning": "돌 (f)", "lesson": 25 },
+            { "hebrew": "גְבוּל", "pronunciation": "[gevu-l / 게불]", "meaning": "경계, 영역", "lesson": 25 },
+            { "hebrew": "זֶרַע", "pronunciation": "[zera / 제라]", "meaning": "씨, 후손", "lesson": 25 },
+            { "hebrew": "עַל־כֵן", "pronunciation": "[al-ke:n / 알켄]", "meaning": "그러므로", "lesson": 25 },
+            { "hebrew": "עֵץ", "pronunciation": "[e:tz / 에츠]", "meaning": "나무, 숲", "lesson": 25 },
+            { "hebrew": "עוֹלָה", "pronunciation": "[o-la- / 올라]", "meaning": "번제", "lesson": 26 },
+            { "hebrew": "גָדַל", "pronunciation": "[ga:dal / 가달]", "meaning": "크다, 부유하다", "lesson": 26 },
+            { "hebrew": "לָבַשׁ", "pronunciation": "[la:vash / 라바쉬]", "meaning": "옷 입다", "lesson": 26 },
+            { "hebrew": "נָטָה", "pronunciation": "[na:ta- / 나타]", "meaning": "이르다, 뻗다", "lesson": 26 },
+            { "hebrew": "רָבָה", "pronunciation": "[ra:va- / 라바]", "meaning": "많아지다", "lesson": 26 },
+            { "hebrew": "אַחֲרֵי", "pronunciation": "[ahtare- / 아하레]", "meaning": "~ 뒤에, ~한 뒤에", "lesson": 26 },
+            { "hebrew": "כַּאֲשֶׁר", "pronunciation": "[kaasher / 카아쉐르]", "meaning": "~한 대로, ~할 때", "lesson": 26 },
+            { "hebrew": "מָה", "pronunciation": "[ma- / 마]", "meaning": "무엇?", "lesson": 26 },
+            { "hebrew": "מִי", "pronunciation": "[mi- / 미]", "meaning": "누구?", "lesson": 26 },
+            { "hebrew": "מִנְחָה", "pronunciation": "[minhta- / 민하]", "meaning": "선물, 소제", "lesson": 26 },
+            { "hebrew": "דִּבֶּר", "pronunciation": "[dibbe:r / 디베르]", "meaning": "피엘 : 말하다", "lesson": 27 },
+            { "hebrew": "הִלֵּל", "pronunciation": "[hile:l / 힐렐]", "meaning": "피엘 : 찬양하다", "lesson": 27 },
+            { "hebrew": "כִּפֶּר", "pronunciation": "[kipe:r / 키페르]", "meaning": "피엘 : 속죄하다", "lesson": 27 },
+            { "hebrew": "צִוָּה", "pronunciation": "[tziva- / 찌바]", "meaning": "피엘 : 명령하다", "lesson": 27 },
+            { "hebrew": "קָדַשׁ / קִדֵּשׁ", "pronunciation": "[qa:dash/qidde:sh / 카다쉬/키데쉬]", "meaning": "칼 : 거룩하다 / 피엘 : 성별하다", "lesson": 27 },
+            { "hebrew": "אֲרוֹן", "pronunciation": "[a:ro-n / 아론]", "meaning": "궤", "lesson": 27 },
+            { "hebrew": "צַדִּיק", "pronunciation": "[tzadi-ch / 짜디크]", "meaning": "정의로운", "lesson": 27 },
+            { "hebrew": "צְדָקָה / צֶדֶק", "pronunciation": "[tzeda:cha-/tzdech / 체다카/체덱]", "meaning": "정의", "lesson": 27 },
+            { "hebrew": "בִּקֵּשׁ", "pronunciation": "[biqe:sh / 비케쉬]", "meaning": "피엘 : 찾다", "lesson": 27 },
+            { "hebrew": "בָּרַךְ / בֵּרֵךְ", "pronunciation": "[ba:rach/be:re:ch / 바라크/베레크]", "meaning": "칼 : 복 받다 / 피엘 : 축복하다", "lesson": 27 },
+            { "hebrew": "חִלֵּל", "pronunciation": "[htille:l / 힐렐]", "meaning": "피엘 : 더럽히다", "lesson": 28 },
+            { "hebrew": "כִּסָּה", "pronunciation": "[kissa- / 키사]", "meaning": "피엘 : 숨기다, 덮다", "lesson": 28 },
+            { "hebrew": "סָפַר / סִפֶּר", "pronunciation": "[sa:far/siper / 사파르/시페르]", "meaning": "칼 : 세다 / 피엘 : 전하다, 말하다", "lesson": 28 },
+            { "hebrew": "שָׂמַח / שִׂמֵּחַ", "pronunciation": "[sa:ma/simme:ah / 사마흐/심메아흐]", "meaning": "칼 : 기쁘다 / 피엘 : 기쁘게 하다", "lesson": 28 },
+            { "hebrew": "חֶרֶב", "pronunciation": "[hterev / 헤레브]", "meaning": "칼(f)", "lesson": 28 },
+            { "hebrew": "כְּלִי", "pronunciation": "[keli- / 켈리]", "meaning": "그릇, 용기", "lesson": 28 },
+            { "hebrew": "מוֹעֵד", "pronunciation": "[mo-e:d / 모에드]", "meaning": "만남", "lesson": 28 },
+            { "hebrew": "עֵדָה", "pronunciation": "[e:da- / 에다]", "meaning": "회중", "lesson": 28 },
+            { "hebrew": "עוֹד", "pronunciation": "[o-d / 오드]", "meaning": "아직, 여전히", "lesson": 28 },
+            { "hebrew": "רַק", "pronunciation": "[raq / 라크]", "meaning": "다만", "lesson": 28 },
+            { "hebrew": "אֶחָד", "pronunciation": "[ehta:d / 에하드]", "meaning": "1", "lesson": 29 },
+            { "hebrew": "שְׁנַיִם", "pronunciation": "[shenaim / 쉐나임]", "meaning": "2", "lesson": 29 },
+            { "hebrew": "שְׁלֹשָׁה", "pronunciation": "[shelo:sha- / 쉘로샤]", "meaning": "3", "lesson": 29 },
+            { "hebrew": "אַרְבָּעָה", "pronunciation": "[arba:a- / 아르바아]", "meaning": "4", "lesson": 29 },
+            { "hebrew": "חֲמִשָּׁה", "pronunciation": "[htamishsha- / 하미샤]", "meaning": "5", "lesson": 29 },
+            { "hebrew": "שִׁשָּׁה", "pronunciation": "[shishsha- / 쉬샤]", "meaning": "6", "lesson": 30 },
+            { "hebrew": "שִׁבְעָה", "pronunciation": "[shiva- / 쉬바]", "meaning": "7", "lesson": 29 },
+            { "hebrew": "שְׁמֹנָה", "pronunciation": "[shemo:na- / 쉐모나]", "meaning": "8", "lesson": 29 },
+            { "hebrew": "תִּשְׁעָה", "pronunciation": "[tisha- / 티샤]", "meaning": "9", "lesson": 29 },
+            { "hebrew": "עֲשָׂרָה", "pronunciation": "[asara- / 아사라]", "meaning": "10", "lesson": 29 },
+            { "hebrew": "מֵאָה", "pronunciation": "[me:a- / 메아]", "meaning": "100", "lesson": 29 },
+            { "hebrew": "אֶלֶף", "pronunciation": "[elef / 엘레프]", "meaning": "1000", "lesson": 29 },
+            { "hebrew": "כָּעַס / הִכְעִיס", "pronunciation": "[ka:as/hichi-s / 카아스/히키스]", "meaning": "칼 : 화내다 / 히필 : 화를 돋우다", "lesson": 30 },
+            { "hebrew": "שָׁאַר / הִשְׁאִיר", "pronunciation": "[sha:ar/hishi-r / 샤아르/히쉬르]", "meaning": "칼 : 남다 / 히필 : 남기다", "lesson": 30 },
+            { "hebrew": "הִשְׁבִּיעַ", "pronunciation": "[hishbi-a / 히쉬비아]", "meaning": "히필 : 맹세하다", "lesson": 30 },
+            { "hebrew": "הִשְׁלִיךְ", "pronunciation": "[hishli-ch / 히쉬리크]", "meaning": "히필 : 던지다, 거절하다", "lesson": 30 },
+            { "hebrew": "חַיִל", "pronunciation": "[htail / 하일]", "meaning": "힘, 덕행", "lesson": 30 },
+            { "hebrew": "מַטֶּה", "pronunciation": "[matte / 마테]", "meaning": "막대기, 지파", "lesson": 30 },
+            { "hebrew": "נַחֲלָה", "pronunciation": "[nahtala- / 나할라]", "meaning": "유산", "lesson": 30 },
+            { "hebrew": "שַׂר", "pronunciation": "[sar / 사르]", "meaning": "지휘관", "lesson": 30 },
+            { "hebrew": "שַׁבָּת", "pronunciation": "[shabba:t / 샤바트]", "meaning": "안식일", "lesson": 30 },
+            { "hebrew": "שַׁעַר", "pronunciation": "[shaar / 샤아르]", "meaning": "성문", "lesson": 30 },
+            { "hebrew": "הֶחֱרִישׁ", "pronunciation": "[hehteri-sh / 헤헤리쉬]", "meaning": "히필 : 침묵하다", "lesson": 31 },
+            { "hebrew": "הִבִּיט", "pronunciation": "[hibbi-t / 히비트]", "meaning": "히필 : 보다", "lesson": 31 },
+            { "hebrew": "הִגִּיד", "pronunciation": "[higgi-d / 히기드]", "meaning": "히필 : 말하다", "lesson": 31 },
+            { "hebrew": "הִדִּיחַ", "pronunciation": "[hiddi-aht / 히디아흐]", "meaning": "히필 : 쫓아내다", "lesson": 31 },
+            { "hebrew": "הִצִּיל", "pronunciation": "[hitztzi-l / 히찌일]", "meaning": "히필 : 구해내다", "lesson": 31 },
+            { "hebrew": "אֱמֶת", "pronunciation": "[emet / 에메트]", "meaning": "충실함, 진실", "lesson": 31 },
+            { "hebrew": "מַחֲנֶה", "pronunciation": "[mahtane / 마하네]", "meaning": "진영", "lesson": 31 },
+            { "hebrew": "מַעֲשֶׂה", "pronunciation": "[maase / 마아세]", "meaning": "일, 소산", "lesson": 31 },
+            { "hebrew": "קֶרֶב", "pronunciation": "[qerev / 케레브]", "meaning": "중심", "lesson": 31 },
+            { "hebrew": "הֶאֱמִין", "pronunciation": "[heemi-n / 헤에민]", "meaning": "히필 : 믿다, 신뢰하다", "lesson": 31 },
+            { "hebrew": "רֵעַ", "pronunciation": "[re:a / 레아]", "meaning": "친구", "lesson": 32 },
+            { "hebrew": "הוֹכִיחַ", "pronunciation": "[ho-chi-aht / 호키아흐]", "meaning": "히필 : 꾸짖다", "lesson": 32 },
+            { "hebrew": "הוֹשִׁיעַ", "pronunciation": "[ho-shi-a / 호쉬아]", "meaning": "히필 : 구원하다", "lesson": 32 },
+            { "hebrew": "הוֹתִיר", "pronunciation": "[ho-ti-r / 호티르]", "meaning": "히필 : 남기다", "lesson": 32 },
+            { "hebrew": "לָמַד / לִמֵּד", "pronunciation": "[la:mad/limme:d / 라마드/림메드]", "meaning": "칼 : 배우다 / 피엘 : 가르치다", "lesson": 32 },
+            { "hebrew": "אֵשׁ", "pronunciation": "[esh / 에쉬]", "meaning": "불", "lesson": 32 },
+            { "hebrew": "אִשֶּׁה", "pronunciation": "[ishshe: / 이쉐]", "meaning": "제사", "lesson": 32 },
+            { "hebrew": "אֶת", "pronunciation": "[et / 에트]", "meaning": "~ 와 함께", "lesson": 32 },
+            { "hebrew": "בָּשָׂר", "pronunciation": "[basa:r / 바사르]", "meaning": "육체, 고기", "lesson": 32 },
+            { "hebrew": "נְאֻם", "pronunciation": "[neum / 네움]", "meaning": "선언", "lesson": 32 },
+            { "hebrew": "יָדָה / הוֹדָה", "pronunciation": "[ya:da-/ho-da- / 야다/호다]", "meaning": "칼 : 쏘다, 던지다 / 히필 : 찬양하다, 고백하다", "lesson": 33 },
+            { "hebrew": "יָרָה / הוֹרָה", "pronunciation": "[ya:ra-/ho-ra- / 야라/호라]", "meaning": "칼 : 쏘다, 던지다 / 히필 : 기리키다, 가르치다", "lesson": 33 },
+            { "hebrew": "הֵכִין", "pronunciation": "[he:chi-n / 헤킨]", "meaning": "히필 : 굳히다", "lesson": 33 },
+            { "hebrew": "נוּחַ / הֵנִיחַ", "pronunciation": "[nu-aht/he:ni-aht / 누아흐/헤니아흐]", "meaning": "칼 : 쉬다 / 히필 : 쉬게 하다, 머물게하다", "lesson": 33 },
+            { "hebrew": "הִכָּה", "pronunciation": "[hikka- / 히카]", "meaning": "히필 : 때리다", "lesson": 33 },
+            { "hebrew": "בֶּטֶן", "pronunciation": "[beten / 베텐]", "meaning": "배, 모태 (f)", "lesson": 33 },
+            { "hebrew": "כַּף", "pronunciation": "[kaf / 카프]", "meaning": "손바닥, 발바닥 (f)", "lesson": 33 },
+            { "hebrew": "לָשׁוֹן", "pronunciation": "[la:sho-n / 라손]", "meaning": "혀", "lesson": 33 },
+            { "hebrew": "עֶצֶם", "pronunciation": "[etzem / 에쳄]", "meaning": "뼈(f)", "lesson": 33 },
+            { "hebrew": "שָׂפָה", "pronunciation": "[sa:fa- / 사파]", "meaning": "입술", "lesson": 33 },
+            { "hebrew": "רֹחַב", "pronunciation": "[ro:htav / 로하브]", "meaning": "너비", "lesson": 34 },
+            { "hebrew": "גּוּר", "pronunciation": "[gu-r / 구르]", "meaning": "칼 : (나그네로) 머무르다", "lesson": 34 },
+            { "hebrew": "הָרַג", "pronunciation": "[ha:rag / 하라그]", "meaning": "칼 : 살인하다", "lesson": 34 },
+            { "hebrew": "נוּס", "pronunciation": "[nu-s / 누스]", "meaning": "칼 : 도망치다", "lesson": 34 },
+            { "hebrew": "פָּנָה", "pronunciation": "[pa:na- / 파나]", "meaning": "칼 : 방향을 돌리다", "lesson": 34 },
+            { "hebrew": "אַחֲרִית", "pronunciation": "[ahtari-t / 아하리트]", "meaning": "끝, 종말", "lesson": 34 },
+            { "hebrew": "אֹרֶךְ", "pronunciation": "[o:rech / 오레크]", "meaning": "길이", "lesson": 34 },
+            { "hebrew": "יָמִין", "pronunciation": "[ya:mi-n / 야민]", "meaning": "오른쪽, 남쪽 (f)", "lesson": 34 },
+            { "hebrew": "צָפוֹן", "pronunciation": "[tza:fo-n / 짜폰]", "meaning": "북쪽(f)", "lesson": 34 },
+            { "hebrew": "רִאשׁוֹן", "pronunciation": "[risho-n / 리손]", "meaning": "첫째, 앞서", "lesson": 34 },
+            { "hebrew": "שֶׁמֶן", "pronunciation": "[shemen / 쉐멘]", "meaning": "기름", "lesson": 35 },
+            { "hebrew": "נִלְחַם", "pronunciation": "[nilhtam / 닐함]", "meaning": "니팔 : 싸우다", "lesson": 35 },
+            { "hebrew": "מָשַׁח", "pronunciation": "[ma:shaht / 마샤흐]", "meaning": "칼 : 기름붓다", "lesson": 35 },
+            { "hebrew": "פָּתַח", "pronunciation": "[pa:taht / 파타흐]", "meaning": "칼 : 열다", "lesson": 35 },
+            { "hebrew": "שָׁאַל", "pronunciation": "[sha:al / 샤알]", "meaning": "칼 : 묻다", "lesson": 35 },
+            { "hebrew": "גֶּפֶן", "pronunciation": "[gefen / 게펜]", "meaning": "포도나무 (f)", "lesson": 35 },
+            { "hebrew": "דְּבַשׁ", "pronunciation": "[dvash / 드바쉬]", "meaning": "꿀", "lesson": 35 },
+            { "hebrew": "יַיִן", "pronunciation": "[yain / 야인]", "meaning": "포도주", "lesson": 35 },
+            { "hebrew": "כֶּרֶם", "pronunciation": "[kerem / 케렘]", "meaning": "포도원", "lesson": 35 },
+            { "hebrew": "פְּרִי", "pronunciation": "[pri- / 프리]", "meaning": "열매", "lesson": 35 },
+            { "hebrew": "נְחֹשֶׁת", "pronunciation": "[nehtoshet / 네호쉐트]", "meaning": "구리, 놋쇠", "lesson": 36 },
+            { "hebrew": "שֶׁמֶשׁ", "pronunciation": "[shemesh / 쉐메쉬]", "meaning": "태양", "lesson": 36 },
+            { "hebrew": "נִבָּא", "pronunciation": "[niba: / 니바]", "meaning": "니팔 : 예언하다", "lesson": 36 },
+            { "hebrew": "בַּרְזֶל", "pronunciation": "[barzel / 바르젤]", "meaning": "쇠", "lesson": 36 },
+            { "hebrew": "גִּבְעָה", "pronunciation": "[giva- / 기바]", "meaning": "언덕", "lesson": 36 },
+            { "hebrew": "גַּיְא", "pronunciation": "[gai / 가이]", "meaning": "골짜기", "lesson": 36 },
+            { "hebrew": "נָהָר", "pronunciation": "[na:ha:r / 나하르]", "meaning": "강, 시내", "lesson": 36 },
+            { "hebrew": "קָבַץ", "pronunciation": "[qa:vatz / 카바츠]", "meaning": "칼 : 모으다", "lesson": 36 },
+            { "hebrew": "רָעָה", "pronunciation": "[ra:a- / 라아]", "meaning": "칼 : 방목하다, 돌보다", "lesson": 36 },
+            { "hebrew": "נַחַל", "pronunciation": "[nahtal / 나할]", "meaning": "강, 시내, 와디", "lesson": 36 },
+            { "hebrew": "נֶגֶב", "pronunciation": "[negev / 네게브]", "meaning": "남쪽, 네게브", "lesson": 37 },
+            { "hebrew": "קָבַר", "pronunciation": "[qa:var / 카바르]", "meaning": "칼 : 매장하다", "lesson": 37 },
+            { "hebrew": "אַחֲרוֹן", "pronunciation": "[ahtaro-n / 아하론]", "meaning": "~ 뒤에, 서쪽", "lesson": 37 },
+            { "hebrew": "אַמָּה", "pronunciation": "[amma- / 암마]", "meaning": "규빗", "lesson": 37 },
+            { "hebrew": "קִטֵּר / הִקְטִיר", "pronunciation": "[qitte:r/hiqti-r / 키테르/히크티르]", "meaning": "피엘 : 분향하다 / 히필 : 분향하다", "lesson": 37 },
+            { "hebrew": "שָׂרַף", "pronunciation": "[ssa:ra:f / 사라프]", "meaning": "칼 : 사르다", "lesson": 37 },
+            { "hebrew": "שֵׁרֵת", "pronunciation": "[she:re:t / 쉐레트]", "meaning": "피엘 : 섬기다, 봉사하다", "lesson": 37 },
+            { "hebrew": "חִטָּה", "pronunciation": "[hitta- / 히타]", "meaning": "밀", "lesson": 37 },
+            { "hebrew": "חֵלֶב", "pronunciation": "[hte:lev / 헬레브]", "meaning": "기름", "lesson": 37 },
+            { "hebrew": "מִגְרָשׁ", "pronunciation": "[migra:sh / 미그라쉬]", "meaning": "목초지", "lesson": 37 },
+            { "hebrew": "פֶּתַח", "pronunciation": "[petaht / 페타흐]", "meaning": "입구, 문", "lesson": 38 },
+            { "hebrew": "הִתְפַּלֵּל", "pronunciation": "[hitpalle:l / 히트팔렐]", "meaning": "히트파엘 : 기도하다", "lesson": 38 },
+            { "hebrew": "רָדַף", "pronunciation": "[ra:daf / 라다프]", "meaning": "칼 : 쫓아가다", "lesson": 38 },
+            { "hebrew": "שָׁבַר", "pronunciation": "[sha:var / 샤바르]", "meaning": "칼 : 깨뜨리다", "lesson": 38 },
+            { "hebrew": "שָׁכַח", "pronunciation": "[sha:chaht / 샤카흐]", "meaning": "칼 : 잊다", "lesson": 38 },
+            { "hebrew": "אוֹצָר", "pronunciation": "[otza:r / 오짜르]", "meaning": "보배, 보물", "lesson": 38 },
+            { "hebrew": "דֶּלֶת", "pronunciation": "[delet / 델레트]", "meaning": "대문, 문짝", "lesson": 38 },
+            { "hebrew": "הֵיכָל", "pronunciation": "[he-cha:l / 헤칼]", "meaning": "궁전, 성전", "lesson": 38 },
+            { "hebrew": "כִּסֵּא", "pronunciation": "[kisse: / 키세]", "meaning": "의자, 왕좌", "lesson": 38 },
+            { "hebrew": "מִגְדָּל", "pronunciation": "[migda:l / 미그달]", "meaning": "탑, 망대", "lesson": 38 },
+            { "hebrew": "אָרַר", "pronunciation": "[arar / 아라르]", "meaning": "칼: 저주하다", "lesson": 39 },
+            { "hebrew": "חָנַן", "pronunciation": "[hanan / 하난]", "meaning": "칼: 은혜를 베풀다", "lesson": 39 },
+            { "hebrew": "אַיִל", "pronunciation": "[ayil / 아일]", "meaning": "사슴", "lesson": 39 },
+            { "hebrew": "אֲרִי", "pronunciation": "[ari / 아리]", "meaning": "사자", "lesson": 39 },
+            { "hebrew": "חָתַת", "pronunciation": "[hatat / 하타트]", "meaning": "칼: 두려워하다", "lesson": 39 },
+            { "hebrew": "מָדַד", "pronunciation": "[madad / 마다드]", "meaning": "칼: 재다", "lesson": 39 },
+            { "hebrew": "סָבַב", "pronunciation": "[savav / 사바브]", "meaning": "칼: 돌다", "lesson": 39 },
+            { "hebrew": "גָּמָל", "pronunciation": "[gamal / 가말]", "meaning": "낙타", "lesson": 39 },
+            { "hebrew": "כֶּבֶשׂ", "pronunciation": "[keves / 케베스]", "meaning": "어린 양", "lesson": 39 },
+            { "hebrew": "כָּנָף", "pronunciation": "[kanaf / 카나프]", "meaning": "날개, 끝", "lesson": 39 },
+            { "hebrew": "רָעָה", "pronunciation": "[raah / 라아]", "meaning": "악, 재앙", "lesson": 40 },
+            { "hebrew": "אָחַז", "pronunciation": "[ahaz / 아하즈]", "meaning": "칼: 붙잡다", "lesson": 40 },
+            { "hebrew": "טָמֵא", "pronunciation": "[tame / 타메]", "meaning": "칼: 부정해지다", "lesson": 40 },
+            { "hebrew": "שָׁחַת", "pronunciation": "[shahat / 샤하트]", "meaning": "피엘: 파괴하다", "lesson": 40 },
+            { "hebrew": "שָׁלַם", "pronunciation": "[shalam / 샬람]", "meaning": "칼: 완성되다", "lesson": 40 },
+            { "hebrew": "שִׁלֵּם", "pronunciation": "[shillem / 쉴렘]", "meaning": "피엘: 되갚다", "lesson": 40 },
+            { "hebrew": "גֶּבֶר", "pronunciation": "[gever / 게베르]", "meaning": "남자, 사나이", "lesson": 40 },
+            { "hebrew": "גֵּר", "pronunciation": "[ger / 게르]", "meaning": "객, 나그네", "lesson": 40 },
+            { "hebrew": "זָכָר", "pronunciation": "[zachar / 자카르]", "meaning": "남성, 수컷", "lesson": 40 },
+            { "hebrew": "זָר", "pronunciation": "[zar / 자르]", "meaning": "이방인, 낯선 사람", "lesson": 40 }];
+        // [NEW] Bookmarks
+        let bookmarks = []; // Array of hebrew words (keys)
+
+        let allWords = words.map((word, index) => ({ ...word, originalIndex: index }));
+        let currentWords = [...allWords];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let currentLesson = 'all';
+
+        const card = document.getElementById('flashcard');
+        const hebrewText = document.getElementById('hebrew-text');
+        const hebrewTextBack = document.getElementById('hebrew-text-back');
+        const pronunciation = document.getElementById('pronunciation');
+        const meaning = document.getElementById('meaning');
+        const currentIndexSpan = document.getElementById('current-index');
+        const totalCountSpan = document.getElementById('total-count');
+        const lessonSelect = document.getElementById('lesson-select');
+        const testLessonSelect = document.getElementById('test-lesson-select');
+        const youtubeBtn = document.getElementById('youtube-btn');
+        const settingsModal = document.getElementById('settings-modal');
+
+        function init() {
+            loadBookmarks();
+            const lessonTitles = [
+                "히브리어 알파벳",
+                "히브리어 모음",
+                "음절, 쉐바, 경강점 (DAGESH FORTE)",
+                "명사: 기본형들",
+                "인칭대명사와 정관사",
+                "동사: 칼(QAL) 완료형",
+                "동사가 있는 문장",
+                "명사: 모음의 변화",
+                "전치사와 접속사 바브",
+                "형용사",
+                "동사: 칼(QAL) 미완료형",
+                "명사의 연계: 단수",
+                "명사의 연계: 복수",
+                "칼 완료형과 미완료형: 약자음 어근",
+                "칼 완료형과 미완료형: 페-눈 동사와 라메드-헤 동사",
+                "단수 명사에 붙는 소유 대명접미어",
+                "지시대명사와 관계사",
+                "칼 미완료형: 페-요드 동사와 페-알렙 동사",
+                "복수 명사에 붙는 소유 대명접미어",
+                "동사: 칼 부정사",
+                "동사: 칼 능동 분사",
+                "전치사에 붙는 대명접미어",
+                "존재와 소유를 나타내는 동사",
+                "동사: 칼 의지형",
+                "칼: 아인-바브 / 아인-요드 (Hollow) 동사",
+                "동사: 바브-연속법",
+                "시간을 나타내는 부사절과 의문문",
+                "피엘: 강자음 어근",
+                "피엘: 약자음 어근",
+                "수사(數詞), '놀라움'의 표현",
+                "히필: 강자음 어근",
+                "히필: 페-후음과 페-눈 동사",
+                "히필: 페-요드 동사",
+                "히필: 라메드-헤와 아인-요드 / 아인-바브 동사",
+                "대명접미어 특이사항",
+                "니팔: 강자음 어근",
+                "니팔: 약자음 어근",
+                "수동태 동사 변형: 칼 수동분사, 푸알, 호팔",
+                "동사: 히트파엘",
+                "동사: 아인 중복 어근"
+            ];
+
+            const maxLesson = 40;
+
+            // ▼▼▼ [수정됨] 드롭다운 생성 로직 ▼▼▼
+            for (let i = 1; i <= maxLesson; i++) {
+                // 배열은 0부터 시작하므로 i-1 인덱스를 사용
+                const titleText = lessonTitles[i - 1] ? `: ${lessonTitles[i - 1]}` : "";
+                const fullText = `${i}과${titleText}`;
+
+                // 메인 화면 필터 옵션
+                const opt1 = document.createElement('option');
+                opt1.value = i;
+                opt1.textContent = fullText;
+                lessonSelect.appendChild(opt1);
+
+                // 시험 화면 범위 선택 옵션
+                const opt2 = document.createElement('option');
+                opt2.value = i;
+                opt2.textContent = fullText;
+                testLessonSelect.appendChild(opt2);
+            }
+
+            if (localStorage.getItem('theme') === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+
+            loadUserInfo(); // Load user info
+            renderBgThemeList(); // Render theme list
+
+            // 배경 테마 적용 (기존 코드 유지)
+            if (typeof applyBgTheme === 'function') {
+                applyBgTheme(localStorage.getItem('bgTheme') || 'gradient-1');
+            }
+
+            updateProgress();
+            renderCard();
+            initGradeView();
+            updateHeaderInfo();
+            renderIncorrectList(); // [NEW] Render initial incorrect list
+
+            // (만약 배경 테마 초기화 함수가 별도로 있다면 호출)
+            if (typeof initBackgroundTheme === 'function') {
+                initBackgroundTheme();
+            }
+        }
+        // [NEW] Bookmark Functions
+        function loadBookmarks() {
+            const saved = localStorage.getItem('hebrew_bookmarks');
+            if (saved) {
+                bookmarks = JSON.parse(saved);
+            }
+            updateIncorrectCount();
+        }
+
+        function saveBookmarks() {
+            localStorage.setItem('hebrew_bookmarks', JSON.stringify(bookmarks));
+            updateIncorrectCount();
+            renderIncorrectList();
+        }
+
+        function isBookmarked(hebrewWord) {
+            return bookmarks.includes(hebrewWord);
+        }
+
+        function addBookmark(hebrewWord) {
+            if (!isBookmarked(hebrewWord)) {
+                bookmarks.push(hebrewWord);
+                saveBookmarks();
+            }
+        }
+
+        function removeBookmark(hebrewWord) {
+            bookmarks = bookmarks.filter(w => w !== hebrewWord);
+            saveBookmarks();
+        }
+
+        function toggleCurrentBookmark(e) {
+            e.stopPropagation();
+            if (currentWords.length === 0) return;
+            const word = currentWords[currentIndex];
+            if (isBookmarked(word.hebrew)) {
+                removeBookmark(word.hebrew);
+            } else {
+                addBookmark(word.hebrew);
+            }
+            updateBookmarkBtnState();
+        }
+
+        function updateBookmarkBtnState() {
+            if (currentWords.length === 0) return;
+            const word = currentWords[currentIndex];
+            const isActive = isBookmarked(word.hebrew);
+            document.querySelectorAll('.bookmark-btn').forEach(btn => {
+                if (isActive) {
+                    btn.classList.add('active');
+                    btn.innerHTML = '<i class="fas fa-star"></i>';
+                } else {
+                    btn.classList.remove('active');
+                    btn.innerHTML = '<i class="far fa-star"></i>';
+                }
+            });
+        }
+
+        function updateIncorrectCount() {
+            const count = bookmarks.length;
+            const el = document.getElementById('incorrect-count');
+            if (el) el.textContent = `(${count})`;
+        }
+
+        function renderIncorrectList() {
+            const container = document.getElementById('incorrect-list');
+            if (!container) return;
+            container.innerHTML = '';
+
+            if (bookmarks.length === 0) {
+                container.innerHTML = '<div class="empty-message">오답 노트가 비어있습니다.</div>';
+                return;
+            }
+
+            // Find full word objects for bookmarks
+            const bookmarkedWords = allWords.filter(w => bookmarks.includes(w.hebrew));
+
+            bookmarkedWords.forEach(word => {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.innerHTML = `
+                    <div class="word-info">
+                        <span class="word-hebrew-list">${word.hebrew}</span>
+                        <span style="font-size:0.9rem; color:#7f8c8d;">${word.pronunciation}</span>
+                        <span>${word.meaning}</span>
+                    </div>
+                    <div style="display:flex; gap:5px;">
+                        <button class="icon-btn small" onclick="speakText('${word.hebrew}')"><i class="fas fa-volume-up"></i></button>
+                        <button class="icon-btn small" style="color:#e74c3c;" onclick="removeBookmark('${word.hebrew}')"><i class="fas fa-trash"></i></button>
+                    </div>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function startIncorrectStudy() {
+            if (bookmarks.length === 0) {
+                // [수정] 깨진 글자 복구
+                alert('오답 노트가 비어있습니다.');
+                return;
+            }
+
+            // [수정] 깨진 글자 복구 (안내 메시지)
+            alert("오답 학습 모드를 시작합니다.\n총 " + bookmarks.length + "개의 단어를 학습합니다.");
+
+            currentWords = allWords.filter(w => bookmarks.includes(w.hebrew));
+            currentIndex = 0;
+
+            // Switch to flashcard view
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.querySelector('.nav-item[data-view="flashcard-view"]').classList.add('active');
+
+            views.forEach(id => {
+                const el = document.getElementById(id);
+                if (id === 'flashcard-view') el.classList.remove('hidden');
+                else el.classList.add('hidden');
+            });
+
+            // Show exit button and hide normal controls
+            document.querySelector('.controls').classList.remove('hidden');
+            document.getElementById('exit-study-btn').classList.remove('hidden');
+            document.getElementById('normal-controls').classList.add('hidden');
+            document.querySelector('.lesson-filter').classList.add('hidden');
+
+            renderCard();
+        }
+
+        function exitIncorrectStudy() {
+            // [수정] 깨진 글자 복구
+            alert("전체 학습 모드로 돌아왔습니다.");
+
+            document.getElementById('exit-study-btn').classList.add('hidden');
+            document.getElementById('normal-controls').classList.remove('hidden');
+            document.querySelector('.lesson-filter').classList.remove('hidden');
+
+            // Reset to normal view (all words or filtered by lesson)
+            filterWords();
+        }
+        function renderCard() {
+            if (currentWords.length === 0) {
+                hebrewText.textContent = "단어 없음";
+                meaning.textContent = "";
+                return;
+            }
+            const word = currentWords[currentIndex];
+            hebrewText.textContent = word.hebrew;
+            hebrewTextBack.textContent = word.hebrew;
+            pronunciation.textContent = word.pronunciation;
+            meaning.textContent = word.meaning.replace(/\s*\/\s*/g, '\n');
+
+            card.classList.remove('flipped');
+            isFlipped = false;
+            updateProgress();
+            updateBookmarkBtnState(); // [NEW] Update bookmark button
+        }
+
+        function updateProgress() {
+            currentIndexSpan.textContent = currentWords.length > 0 ? currentIndex + 1 : 0;
+            totalCountSpan.textContent = currentWords.length;
+        }
+
+        function nextCard() {
+            if (currentWords.length === 0) return;
+            currentIndex = (currentIndex < currentWords.length - 1) ? currentIndex + 1 : 0;
+            renderCard();
+        }
+
+        function prevCard() {
+            if (currentWords.length === 0) return;
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : currentWords.length - 1;
+            renderCard();
+        }
+
+        card.addEventListener('click', () => {
+            card.classList.toggle('flipped');
+            isFlipped = !isFlipped;
+        });
+        document.getElementById('next-btn').addEventListener('click', (e) => { e.stopPropagation(); nextCard(); });
+        document.getElementById('prev-btn').addEventListener('click', (e) => { e.stopPropagation(); prevCard(); });
+
+        document.getElementById('shuffle-btn').addEventListener('click', () => {
+            currentWords.sort(() => Math.random() - 0.5);
+            currentIndex = 0;
+            renderCard();
+        });
+        document.getElementById('sort-btn').addEventListener('click', () => {
+            currentWords.sort((a, b) => a.originalIndex - b.originalIndex);
+            currentIndex = 0;
+            renderCard();
+        });
+
+        lessonSelect.addEventListener('change', (e) => {
+            currentLesson = e.target.value;
+            filterWords();
+
+            const url = lessonVideos[currentLesson];
+            if (url) {
+                youtubeBtn.classList.add('active');
+            } else {
+                youtubeBtn.classList.remove('active');
+            }
+        });
+
+        youtubeBtn.addEventListener('click', () => {
+            const url = lessonVideos[currentLesson];
+            if (url) window.open(url, '_blank');
+        });
+
+        document.getElementById('search-input').addEventListener('input', filterWords);
+
+        function filterWords() {
+            const term = document.getElementById('search-input').value.toLowerCase();
+            let filtered = allWords;
+            if (currentLesson !== 'all') {
+                filtered = filtered.filter(w => w.lesson == currentLesson);
+            }
+            if (term) {
+                filtered = filtered.filter(w =>
+                    w.hebrew.includes(term) ||
+                    w.pronunciation.toLowerCase().includes(term) ||
+                    w.meaning.toLowerCase().includes(term)
+                );
+            }
+            currentWords = filtered;
+            currentIndex = 0;
+            renderCard();
+        }
+
+        const views = ['flashcard-view', 'list-view', 'test-view', 'grade-view', 'incorrect-view']; // [NEW] Added incorrect-view
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetId = btn.dataset.view;
+                if (!targetId) return; // For settings button which is handled separately
+
+                document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                views.forEach(id => {
+                    const el = document.getElementById(id);
+                    if (id === targetId) el.classList.remove('hidden');
+                    else el.classList.add('hidden');
+                });
+                const controls = document.querySelector('.controls');
+                if (targetId === 'flashcard-view') controls.classList.remove('hidden');
+                else controls.classList.add('hidden');
+
+                if (targetId === 'list-view') renderWordList();
+                if (targetId === 'incorrect-view') renderIncorrectList(); // [NEW] Render incorrect list
+            });
+        });
+
+        function renderWordList() {
+            const container = document.getElementById('word-list');
+            container.innerHTML = '';
+            // Optimization: Render only first 100 or use pagination if needed, but for now render all filtered
+            // Actually, let's render currentWords which are already filtered
+            currentWords.forEach(word => {
+                const div = document.createElement('div');
+                div.className = 'word-item';
+                div.innerHTML = `
+                    <div class="word-info">
+                        <span class="word-hebrew-list">${word.hebrew}</span>
+                        <span style="font-size:0.9rem; color:#7f8c8d;">${word.pronunciation}</span>
+                        <span>${word.meaning}</span>
+                    </div>
+                    <button class="icon-btn small" onclick="speakText('${word.hebrew}')"><i class="fas fa-volume-up"></i></button>
+                `;
+                container.appendChild(div);
+            });
+        }
+
+        function speakText(text) {
+            window.speechSynthesis.cancel();
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'he-IL';
+            window.speechSynthesis.speak(utterance);
+        }
+        document.querySelectorAll('.audio-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                speakText(currentWords[currentIndex].hebrew);
+            });
+        });
+
+        // --- Settings & Theme ---
+        function openSettings() {
+            document.getElementById('settings-modal').classList.remove('hidden');
+            loadUserInfo();
+        }
+        function closeSettings() {
+            document.getElementById('settings-modal').classList.add('hidden');
+        }
+        function saveUserInfo() {
+            const name = document.getElementById('user-name').value;
+            const id = document.getElementById('user-student-id').value;
+            localStorage.setItem('user_name', name);
+            localStorage.setItem('user_id', id);
+            updateHeaderInfo();
+            closeSettings();
+        }
+        function loadUserInfo() {
+            const name = localStorage.getItem('user_name') || '';
+            const id = localStorage.getItem('user_id') || '';
+            document.getElementById('user-name').value = name;
+            document.getElementById('user-student-id').value = id;
+        }
+        function updateHeaderInfo() {
+            const name = localStorage.getItem('user_name');
+            const id = localStorage.getItem('user_id');
+            const infoDiv = document.getElementById('header-user-info');
+            if (name || id) {
+                infoDiv.textContent = `${name} ${id}`;
+            } else {
+                infoDiv.textContent = '';
+            }
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDark) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        function resetAllData() {
+            if (confirm('정말로 모든 기록(시험 점수, 오답 노트, 설정)을 초기화하시겠습니까?')) {
+                localStorage.clear();
+                location.reload();
+            }
+        }
+
+        // --- Background Themes ---
+        const bgThemes = [
+            { id: 'gradient-1', name: '기본 (보라)', value: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' },
+            { id: 'gradient-2', name: '바다 (블루)', value: 'linear-gradient(135deg, #2193b0 0%, #6dd5ed 100%)' },
+            { id: 'gradient-3', name: '노을 (오렌지)', value: 'linear-gradient(135deg, #ff9966 0%, #ff5e62 100%)' },
+            { id: 'gradient-4', name: '숲 (그린)', value: 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)' },
+            { id: 'solid-1', name: '심플 (그레이)', value: '#34495e' },
+        ];
+
+        function renderBgThemeList() {
+            const container = document.getElementById('bg-theme-list');
+            container.innerHTML = '';
+            const currentTheme = localStorage.getItem('bgTheme') || 'gradient-1';
+
+            bgThemes.forEach(theme => {
+                const div = document.createElement('div');
+                div.className = 'bg-swatch';
+                if (theme.value.startsWith('linear')) {
+                    div.style.background = theme.value;
+                } else {
+                    div.style.backgroundColor = theme.value;
+                }
+                if (theme.id === currentTheme) div.classList.add('selected');
+
+                div.onclick = () => {
+                    applyBgTheme(theme.id);
+                    document.querySelectorAll('.bg-swatch').forEach(s => s.classList.remove('selected'));
+                    div.classList.add('selected');
+                };
+                container.appendChild(div);
+            });
+        }
+
+        function applyBgTheme(themeId) {
+            const theme = bgThemes.find(t => t.id === themeId) || bgThemes[0];
+            document.body.style.background = theme.value;
+            localStorage.setItem('bgTheme', themeId);
+        }
+
+        // --- Test Logic ---
+        let testQuestions = [];
+        let currentQuestionIndex = 0;
+        let testScore = 0;
+        let testTimerInterval;
+        let testSeconds = 0;
+        let isReverseMode = false;
+
+        document.getElementById('start-test-btn').addEventListener('click', startTest);
+        document.getElementById('retry-test-btn').addEventListener('click', startTest);
+        document.getElementById('new-test-btn').addEventListener('click', () => {
+            document.getElementById('test-result-screen').classList.add('hidden');
+            document.getElementById('test-start-screen').classList.remove('hidden');
+        });
+
+        function startTest() {
+            const lessonVal = document.getElementById('test-lesson-select').value;
+            isReverseMode = document.getElementById('test-reverse-mode').checked;
+
+            let pool = allWords;
+            if (lessonVal !== 'all') {
+                pool = pool.filter(w => w.lesson == lessonVal);
+            }
+
+            if (pool.length < 5) {
+                alert('단어 수가 너무 적어 시험을 볼 수 없습니다.');
+                return;
+            }
+
+            // Generate 10 random questions
+            testQuestions = [];
+            const poolCopy = [...pool];
+            const qCount = Math.min(10, poolCopy.length);
+
+            for (let i = 0; i < qCount; i++) {
+                const randIdx = Math.floor(Math.random() * poolCopy.length);
+                const target = poolCopy.splice(randIdx, 1)[0];
+
+                // Generate wrong options
+                const options = [target];
+                while (options.length < 4) {
+                    const randOpt = allWords[Math.floor(Math.random() * allWords.length)];
+                    if (!options.find(o => o.hebrew === randOpt.hebrew)) {
+                        options.push(randOpt);
+                    }
+                }
+                options.sort(() => Math.random() - 0.5);
+
+                testQuestions.push({
+                    target: target,
+                    options: options
+                });
+            }
+
+            currentQuestionIndex = 0;
+            testScore = 0;
+            testSeconds = 0;
+
+            document.getElementById('test-start-screen').classList.add('hidden');
+            document.getElementById('test-result-screen').classList.add('hidden');
+            document.getElementById('test-quiz-screen').classList.remove('hidden');
+
+            startTimer();
+            renderQuestion();
+        }
+
+        function startTimer() {
+            clearInterval(testTimerInterval);
+            testSeconds = 0;
+            updateTimerDisplay();
+            testTimerInterval = setInterval(() => {
+                testSeconds++;
+                updateTimerDisplay();
+            }, 1000);
+        }
+
+        function updateTimerDisplay() {
+            const min = Math.floor(testSeconds / 60).toString().padStart(2, '0');
+            const sec = (testSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('quiz-timer').textContent = `${min}:${sec}`;
+        }
+
+        function renderQuestion() {
+            const q = testQuestions[currentQuestionIndex];
+            document.getElementById('quiz-progress').textContent = `${currentQuestionIndex + 1} / ${testQuestions.length}`;
+            document.getElementById('quiz-score').textContent = `점수: ${testScore}`;
+
+            const qEl = document.getElementById('quiz-question');
+            const optsEl = document.getElementById('quiz-options');
+            optsEl.innerHTML = '';
+
+            if (isReverseMode) {
+                qEl.style.fontSize = '1.8rem';
+                qEl.style.fontFamily = "'Noto Sans KR', sans-serif";
+                qEl.textContent = q.target.meaning;
+            } else {
+                qEl.style.fontSize = '3rem';
+                qEl.style.fontFamily = "'Frank Ruhl Libre', serif";
+                qEl.textContent = q.target.hebrew;
+            }
+
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                if (isReverseMode) {
+                    btn.style.fontFamily = "'Frank Ruhl Libre', serif";
+                    btn.style.fontSize = "1.5rem";
+                    btn.textContent = opt.hebrew;
+                } else {
+                    btn.textContent = opt.meaning;
+                }
+                btn.onclick = () => checkAnswer(btn, opt, q.target);
+                optsEl.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            const buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selected.hebrew === correct.hebrew) {
+                btn.classList.add('correct');
+                testScore++;
+                // Play correct sound (optional)
+            } else {
+                btn.classList.add('wrong');
+                // Highlight correct answer
+                buttons.forEach(b => {
+                    if (isReverseMode) {
+                        if (b.textContent === correct.hebrew) b.classList.add('correct');
+                    } else {
+                        if (b.textContent === correct.meaning) b.classList.add('correct');
+                    }
+                });
+                // [NEW] Auto-bookmark incorrect answer
+                addBookmark(correct.hebrew);
+            }
+
+            setTimeout(() => {
+                currentQuestionIndex++;
+                if (currentQuestionIndex < testQuestions.length) {
+                    renderQuestion();
+                } else {
+                    finishTest();
+                }
+            }, 1500);
+        }
+
+        function finishTest(early = false) {
+            clearInterval(testTimerInterval);
+            document.getElementById('test-quiz-screen').classList.add('hidden');
+
+            if (early) {
+                document.getElementById('test-start-screen').classList.remove('hidden');
+                return;
+            }
+
+            document.getElementById('test-result-screen').classList.remove('hidden');
+            document.getElementById('final-score').textContent = testScore;
+            document.getElementById('total-questions').textContent = testQuestions.length;
+
+            const msgEl = document.getElementById('result-message');
+            const percentage = (testScore / testQuestions.length) * 100;
+            if (percentage === 100) msgEl.textContent = "완벽합니다! 🎉";
+            else if (percentage >= 80) msgEl.textContent = "훌륭해요! 👍";
+            else if (percentage >= 50) msgEl.textContent = "잘했어요! 조금 더 분발하세요. 💪";
+            else msgEl.textContent = "화이팅! 다시 도전해보세요. 🌱";
+
+            saveTestResult();
+        }
+
+        function saveTestResult() {
+            const history = JSON.parse(localStorage.getItem('test_history') || '[]');
+            const result = {
+                date: new Date().toISOString(),
+                lesson: document.getElementById('test-lesson-select').value,
+                score: testScore,
+                total: testQuestions.length,
+                time: testSeconds
+            };
+            history.unshift(result);
+            if (history.length > 50) history.pop(); // Keep last 50
+            localStorage.setItem('test_history', JSON.stringify(history));
+            initGradeView();
+        }
+
+        function initGradeView() {
+            const container = document.getElementById('grade-list-container');
+            const history = JSON.parse(localStorage.getItem('test_history') || '[]');
+
+            if (history.length === 0) {
+                container.innerHTML = '<div style="color:white; text-align:center; padding:20px;">기록이 없습니다.</div>';
+                return;
+            }
+
+            let html = `
+                <table class="grade-table">
+                    <thead>
+                        <tr>
+                            <th>날짜</th>
+                            <th>단원</th>
+                            <th>점수</th>
+                            <th>시간</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            history.forEach(h => {
+                const date = new Date(h.date).toLocaleDateString();
+                const lesson = h.lesson === 'all' ? '전체' : `${h.lesson}과`;
+                const percentage = (h.score / h.total) * 100;
+                const scoreClass = percentage >= 80 ? 'score-high' : '';
+                const min = Math.floor(h.time / 60);
+                const sec = (h.time % 60).toString().padStart(2, '0');
+
+                html += `
+                    <tr>
+                        <td>${date}</td>
+                        <td>${lesson}</td>
+                        <td class="${scoreClass}">${h.score}/${h.total}</td>
+                        <td>${min}:${sec}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        init();
+
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        const gestureZone = document.getElementById('flashcard-view');
+
+        gestureZone.addEventListener('touchstart', function (event) {
+            touchStartX = event.changedTouches[0].screenX;
+            touchStartY = event.changedTouches[0].screenY;
+        }, { passive: false });
+
+        gestureZone.addEventListener('touchend', function (event) {
+            touchEndX = event.changedTouches[0].screenX;
+            touchEndY = event.changedTouches[0].screenY;
+            handleSwipeGesture();
+        }, { passive: false });
+
+        function handleSwipeGesture() {
+            const xDiff = touchEndX - touchStartX;
+            const yDiff = touchEndY - touchStartY;
+
+            if (Math.abs(xDiff) > 50 && Math.abs(xDiff) > Math.abs(yDiff)) {
+                if (xDiff > 0) {
+                    prevCard();
+                } else {
+                    nextCard();
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
